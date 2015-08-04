@@ -115,3 +115,67 @@ bnlCharts.directive('bnlXAxis', function () {
         template: '<g></g>'
     }
 });
+
+bnlCharts.directive('bnlYAxis', function () {
+
+    var renderAxis = function (element, yScale, width, height) {
+        yAxis = d3.svg.axis()
+            .scale(yScale)
+            .orient('left');
+
+        d3.select(element)
+            .attr('class', 'y axis')
+            .attr('transform', 'translate(25,0)')
+            .call(yAxis);
+    };
+
+    return {
+        controller: function ($scope) {
+            console.log('bnlYAxis controller:' + $scope.$id);
+        },
+        link: function (scope, element, attrs) {
+            console.log('bnlYAxis link:' + scope.$id);
+
+            renderAxis(element[0], scope.yScale, scope.svg.clientWidth, scope.svg.clientHeight);
+        },
+        replace: true,
+        restrict: 'E',
+        scope: false,
+        templateNamespace: 'svg',
+        template: '<g></g>'
+    }
+});
+
+bnlCharts.directive('bnlArea', function () {
+
+    var render = function (element, x, y, width, height, dataPoints) {
+
+        var area = d3.svg.area()
+            .x(function (d) { console.log('.'); return x(new Date(d.x)); })
+            .y0(height)
+            .y1(function (d) { return height - y(d.y); })
+             .interpolate("linear");
+
+        var select = d3.select(element).selectAll('.area').data(dataPoints);
+        
+        select.enter()
+            .append("path")
+            .attr("class", "area")
+            .attr("d", area(dataPoints));
+    };
+
+    return {
+        link: function (scope, element, attrs) {
+            console.log('bnlArea link:' + scope.$id);
+
+            scope.$on('render-chart', function (event, args) {
+                render(element[0], scope.xScale, scope.yScale, scope.svg.clientWidth, scope.svg.clientHeight, scope.chartData);
+            });
+        },
+        replace: true,
+        restrict: 'E',
+        scope: false,
+        templateNamespace: 'svg',
+        template: '<g></g>'
+    }
+});

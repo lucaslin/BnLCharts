@@ -7,14 +7,6 @@ svg {
     border: 1px solid lightgray;        
 }
 
-.bar {
+.area {
     fill: darkgray;
-}
-
-.bar-too {
-    fill: gray;
-}
-
-.plot {
-    margin-bottom: 15px;
 }
