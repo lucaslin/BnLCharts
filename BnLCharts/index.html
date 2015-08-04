@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>BnL Charts Development</title>
+    <link rel="stylesheet" href="app.css" type="text/css" />
+</head>
+<body ng-app="mainApp">
+
+    <div ng-controller="MainCtrl">
+        <bnl-chart chart-data="chartData" width="1200" height="300">
+            <bnl-x-axis></bnl-x-axis>
+            <!--<bnl-y-axis location="left"></bnl-y-axis>-->
+            <!--<bnl-legend location="right"></bnl-legend>-->
+            <!--<bnl-plot>-->
+            <!--<bnl-bars></bnl-bars>-->
+            <!--</bnl-plot>-->
+        </bnl-chart>
+    </div>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="moment.js"></script>
+    <script type="text/javascript" src="bnl-charts.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+</body>
+</html>

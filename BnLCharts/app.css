@@ -1,0 +1,20 @@
+﻿body
+{
+    font-family: 'Segoe UI';
+}
+
+svg {
+    border: 1px solid lightgray;        
+}
+
+.bar {
+    fill: darkgray;
+}
+
+.bar-too {
+    fill: gray;
+}
+
+.plot {
+    margin-bottom: 15px;
+}
