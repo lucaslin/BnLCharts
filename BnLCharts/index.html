@@ -9,10 +9,10 @@
 <body ng-app="mainApp">
 
     <div ng-controller="MainCtrl">
-        <bnl-chart chart-data="chartData" width="1200" height="300">
-            <bnl-area></bnl-area>
-            <bnl-x-axis></bnl-x-axis>
-            <bnl-y-axis></bnl-y-axis>
+        <bnl-chart chart-data="chartData" width="1200" height="300">            
+            <bnl-x-axis chart="chart" x="30" y="275" width="1170" height="25"></bnl-x-axis>
+            <bnl-y-axis chart="chart" x="30" y="0" width="25" height="275"></bnl-y-axis>            
+            <bnl-area chart="chart" x="30" y="0" width="1170" height="275"></bnl-area>
         </bnl-chart>
     </div>
 
