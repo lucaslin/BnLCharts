@@ -6,7 +6,7 @@ bnlCharts.directive('bnlChart', function ($timeout) {
 
     var createXScale = function (width) {
         // I create the X scale
-        var x = d3.time.scale();            
+        var x = d3.time.scale();
 
         x.ticks(d3.time.day);
         x.tickFormat('%a %d');
@@ -50,7 +50,7 @@ bnlCharts.directive('bnlChart', function ($timeout) {
 
     return {
         controller: function ($scope, $element, $attrs, $transclude) {
-            console.log('bnlChart controller:' + $scope.$id);            
+            console.log('bnlChart controller:' + $scope.$id);
 
             var svg = $element[0];
 
@@ -63,7 +63,7 @@ bnlCharts.directive('bnlChart', function ($timeout) {
             $scope.chart = {
                 data: $scope.chartData,
                 xScale: xScale,
-                yScale: yScale                
+                yScale: yScale
             };
 
             // I transclude content manually to avoid creating another scope.
@@ -77,7 +77,7 @@ bnlCharts.directive('bnlChart', function ($timeout) {
             console.log('bnlChart link:' + scope.$id);
             $timeout(function () {
                 scope.$broadcast('bnl-chart-render');
-            },500);
+            }, 500);
         },
         replace: true,
         restrict: 'E',
@@ -101,7 +101,7 @@ bnlCharts.directive('bnlXAxis', function () {
             .orient('bottom');
 
         d3.select(element)
-            .attr('class', 'x axis')            
+            .attr('class', 'x axis')
             //.attr('transform', 'translate(0,' + height + ')')
             .call(xAxis);
     };
@@ -120,27 +120,14 @@ bnlCharts.directive('bnlXAxis', function () {
                 var g = element[0];
                 var svg = g.ownerSVGElement;
 
-                var x = scope.x ? scope.x : 0;
-                var y = scope.y ? scope.y : 0;
-                var width = scope.width ? scope.width : svg.clientWidth;
-                var height = scope.height ? scope.height : svg.clientHeight;
-
-                d3.select(g).attr({
-                    transform: 'translate(' + x + ',' + y + ')'
-                });
-
-                renderAxis(g, scope.chart.xScale, width, height);
+                renderAxis(g, scope.chart.xScale, scope.width, scope.height);
             });
-            
+
         },
         replace: true,
         restrict: 'E',
         scope: {
-            chart: '=',
-            x: '=',
-            y: '=',
-            width: '=',
-            height: '='
+            chart: '='
         },
         templateNamespace: 'svg',
         template: '<g></g>'
@@ -158,7 +145,7 @@ bnlCharts.directive('bnlYAxis', function () {
             .orient('left');
 
         d3.select(element)
-            .attr('class', 'y axis')            
+            .attr('class', 'y axis')
             .call(yAxis);
     };
 
@@ -176,53 +163,18 @@ bnlCharts.directive('bnlYAxis', function () {
                 var g = element[0];
                 var svg = g.ownerSVGElement;
 
-                var x = scope.x ? scope.x : 0;
-                var y = scope.y ? scope.y : 0;
-                var width = scope.width ? scope.width : svg.clientWidth;
-                var height = scope.height ? scope.height : svg.clientHeight;
-
-                d3.select(g).attr({
-                    transform: 'translate(' + x + ',' + y + ')'
-                });                
-                renderAxis(g, scope.chart.yScale, width, height);
+                renderAxis(g, scope.chart.yScale, scope.width, scope.height);
             });
         },
         replace: true,
         restrict: 'E',
         scope: {
-            chart: '=',
-            x: '=',
-            y: '=',
-            width: '=',
-            height: '='
+            chart: '='
         },
         templateNamespace: 'svg',
         template: '<g></g>'
     }
 });
-
-//bnlCharts.directive('bnlPlot', function ($timeout) {
-//    return {
-//        controller: function ($scope, $element, $attrs, $transclude) {
-//            console.log('bnlPlot controller:' + $scope.$id);
-
-//            // I transclude content manually to avoid creating another scope.
-//            // This remove the need for an ng-transclude attribute in the template.
-//            // Transclude should be after scope is prepared because it causes link function of children to execute.
-//            $transclude($scope, function (clone, scope) {
-//                $element.append(clone);
-//            });
-//        },
-//        link: function (scope, element, attrs) {
-//            console.log('bnlPlot link:' + scope.$id);           
-//        },
-//        replace: true,
-//        restrict: 'E',
-//        scope: false,        
-//        template: '<g></g>',
-//        transclude: true
-//    }
-//});
 
 bnlCharts.directive('bnlArea', function () {
 
@@ -235,7 +187,7 @@ bnlCharts.directive('bnlArea', function () {
              .interpolate("linear");
 
         var select = d3.select(element).selectAll('.area').data(dataPoints);
-        
+
         select.enter()
             .append("path")
             .attr("class", "area")
@@ -253,28 +205,110 @@ bnlCharts.directive('bnlArea', function () {
                 var g = element[0];
                 var svg = g.ownerSVGElement;
 
-                var x = scope.x ? scope.x : 0;
-                var y = scope.y ? scope.y : 0;
-                var width = scope.width ? scope.width : svg.clientWidth;
-                var height = scope.height ? scope.height : svg.clientHeight;
-
-                d3.select(g).attr({
-                    transform: 'translate(' + x + ',' + y + ')'
-                });
-
-                render(g, scope.chart.xScale, scope.chart.yScale, width, height, scope.chart.data);
+                render(g, scope.chart.xScale, scope.chart.yScale, scope.width, scope.height, scope.chart.data);
             });
         },
         replace: true,
         restrict: 'E',
         scope: {
-            chart: '=',
-            x: '=',
-            y: '=',
-            width: '=',
-            height: '='
+            chart: '='
         },
         templateNamespace: 'svg',
         template: '<g></g>'
+    }
+});
+
+bnlCharts.directive('bnlAbsoluteLayout', function () {
+    return {
+        controller: function ($scope, $element, $attrs, $transclude) {
+            console.log('bnlAbsoluteLayout controller:' + $scope.$id);
+
+            // I transclude content manually to avoid creating another scope.
+            // This remove the need for an ng-transclude attribute in the template.
+            // Transclude should be after scope is prepared because it causes link function of children to execute.
+            // In this case, I use the parent scope to make the layout layer scope transparent.
+            $transclude($scope.$parent, function (clone, scope) {
+                $element.append(clone);
+            });
+
+            $scope.$on('bnl-chart-render', function (event, args) {
+
+                console.log('bnlAbsoluteLayout render:' + $scope.$id);
+
+                var svg = $element[0];
+
+                $.each($($element).children(), function (index, child) {
+
+                    var $child = $(child);
+                    var x = $child.attr('x') ? Number($child.attr('x')) : 0;
+                    var y = $child.attr('y') ? Number($child.attr('y')) : 0;
+
+                    d3.select(child).attr({
+                        transform: 'translate(' + x + ',' + y + ')'
+                    });
+
+
+                    var width = $child.attr('width') ? Number($child.attr('width')) : svg.clientWidth;
+                    var height = $child.attr('height') ? Number($child.attr('height')) : svg.clientHeight;
+
+                    var childScope = angular.element(child).isolateScope();
+
+                    childScope.width = width;
+                    childScope.height = height;
+                });
+            });
+        },
+        link: function (scope, element, attrs) {
+            console.log('bnlAbsoluteLayout link:' + scope.$id);
+
+            var g = element[0];
+            d3.select(g).classed('bnl-absolute-layout', true);
+        },
+        replace: true,
+        restrict: 'E',
+        scope: {},
+        templateNamespace: 'svg',
+        template: '<g></g>',
+        transclude: true
+    }
+});
+
+bnlCharts.directive('bnlAbsoluteLayout', function () {
+    return {
+        controller: function ($scope, $element) {
+            console.log('bnlAbsoluteLayout controller:' + $scope.$id);
+
+            $scope.$on('bnl-chart-render', function (event, args) {
+
+                console.log('bnlAbsoluteLayout render:' + $scope.$id);
+
+                var svg = $element[0];
+
+                $.each($($element).children(), function (index, child) {
+
+                    var $child = $(child);
+                    var x = $child.attr('x') ? Number($child.attr('x')) : 0;
+                    var y = $child.attr('y') ? Number($child.attr('y')) : 0;
+
+                    d3.select(child).attr({
+                        transform: 'translate(' + x + ',' + y + ')'
+                    });
+
+
+                    var width = $child.attr('width') ? Number($child.attr('width')) : svg.clientWidth;
+                    var height = $child.attr('height') ? Number($child.attr('height')) : svg.clientHeight;
+
+                    var childScope = angular.element(child).isolateScope();
+
+                    childScope.width = width;
+                    childScope.height = height;
+                });
+            });
+        },
+        link: function (scope, element, attrs) {
+            console.log('bnlAbsoluteLayout link:' + scope.$id);
+        },
+        restrict: 'A',
+        scope: false
     }
 });
