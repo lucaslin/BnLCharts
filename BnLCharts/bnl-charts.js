@@ -1,5 +1,65 @@
-﻿// Dangle Chart Directive
-// This is the top level container for a chart.
+﻿// ================================================================================ //
+/*
+ * BnL Charts
+ * 
+ * D3 charting componentized using Angular directives.
+ * 
+ * Usage
+ * -----
+ * HTML:
+ * 
+ *   <bnl-chart chart-data="chartData" width="1200" height="300">
+ *     <bnl-absolute-layout>
+ *       <bnl-x-axis chart="chart" x="30" y="275" width="1170" height="25"></bnl-x-axis>
+ *       <bnl-y-axis chart="chart" x="30" y="0" width="25" height="275"></bnl-y-axis>
+ *       <bnl-area chart="chart" x="30" y="0" width="1170" height="275"></bnl-area>
+ *     </bnl-absolute-layout>
+ *   </bnl-chart>
+ * 
+ *   The bnl-chart data is bound via the chart-data attribute.
+ *   The bnl-chart renders as an SVG element, so you can set properties on the SVG like width and height.
+ *   Choose a layout container for the parts of your chart.  Based on your choice, you can apply different attributes to control layout.
+ *   Each part will have a chart attribute that you should bind to chart (e.g. chart="chart").
+ *   Ordering parts can be important to layout and z-order of rendering.
+ *   
+ * Components
+ * ----------
+ * Modules: 
+ *   bnlCharts
+ * 
+ * Directives:
+ *   bnl-chart: Main container for a chart.
+ * 
+ *   bnl-x-axis: Renders an x axis
+ *   bnl-y-axis: Renders a Y axis.
+ * 
+ *   bnl-area: Renders an area chart for a single series)
+ * 
+ *   bnl-absolute-layout: Positions children based on their attributes of x, y, width, height.
+ *   bnl-docked-layout: Positions children based on the side they are docked (left, top, right, bottom, none).
+ * 
+ * 
+ * Design Considerations
+ * ---------------------
+ * Scope: 
+ *   The chart directive is isolated scope to prevent collision with other charts on the page.
+ *   Each child that renders has isolated scope to allow for setting individual scope properties like width and height.
+ *    
+ * Transclusion:
+ *   Containers (chart and layouts) transclude content to avoid requiring chart authors to edit templates.
+ *   Transclusion is done manually in the directives to avoid creating an additonal isolated scope. ng-transclude is not in the templates.
+ *   Layouts with isolated scopes use the chart's scope for their transcluded content to be invisible to their children.
+ *   The call to $transclude is done at the tail of the method because it causes link functions to execute.  
+ *   $transclude is called so that controller calls tunnel down the scope hierarchy and link calls bubble up the scope hierarchy.
+ * 
+ * SVG:
+ *   This library avoids nesting SVG elements for grouping and uses the <g> element instead.
+ *   A single SVG at the root allows the chart to scale properly; It is vector graphics after all.
+ *   D3 renders based on variables in memory and not SVG containers (e.g. axis.range), so width/height containment isn't important.
+ *   Browsers handle nested SVG width/height updates for rendering, but the clientWidth, clientHeight, and getBBox() are zeros for a nested SVG in JavaScript.
+ */
+// ================================================================================ //
+
 var bnlCharts = angular.module('bnlCharts', []);
 
 bnlCharts.directive('bnlChart', function ($timeout) {
@@ -144,8 +204,12 @@ bnlCharts.directive('bnlYAxis', function () {
             .scale(yScale)
             .orient('left');
 
-        d3.select(element)
-            .attr('class', 'y axis')
+        x = width; //orient left is right-hand-side based
+
+        d3.select(element).select('.y-axis')
+            .attr({
+                transform: 'translate(' + x + ',0)'
+            })
             .call(yAxis);
     };
 
@@ -172,7 +236,7 @@ bnlCharts.directive('bnlYAxis', function () {
             chart: '='
         },
         templateNamespace: 'svg',
-        template: '<g></g>'
+        template: '<g><g class="y-axis axis"></g></g>'
     }
 });
 
@@ -223,10 +287,7 @@ bnlCharts.directive('bnlAbsoluteLayout', function () {
         controller: function ($scope, $element, $attrs, $transclude) {
             console.log('bnlAbsoluteLayout controller:' + $scope.$id);
 
-            // I transclude content manually to avoid creating another scope.
-            // This remove the need for an ng-transclude attribute in the template.
-            // Transclude should be after scope is prepared because it causes link function of children to execute.
-            // In this case, I use the parent scope to make the layout layer scope transparent.
+            // I use $scope.$parent to avoid injecting an empty scope for trancluded content.
             $transclude($scope.$parent, function (clone, scope) {
                 $element.append(clone);
             });
@@ -260,9 +321,189 @@ bnlCharts.directive('bnlAbsoluteLayout', function () {
         },
         link: function (scope, element, attrs) {
             console.log('bnlAbsoluteLayout link:' + scope.$id);
+        },
+        replace: true,
+        restrict: 'E',
+        scope: {},
+        templateNamespace: 'svg',
+        template: '<g class="bnl-absolute-layout"></g>',
+        transclude: true
+    }
+});
+
+bnlCharts.directive('bnlDockedLayout', function () {
+
+    var parseMargin = function (text) {
+
+        var margin = {
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0
+        };
+
+        if (text) {
+
+            var parts = text.split(',');
+
+            switch (parts.length) {
+                case 1:
+                    var marginAll = Number(parts[0]);
+                    if (!isNaN(marginAll)) {
+                        margin.top = marginAll;
+                        margin.right = marginAll;
+                        margin.bottom = marginAll;
+                        margin.left = marginAll;
+                    }
+                    break;
+                case 2:
+                    var marginTopBottom = Number(parts[0]);
+                    var marginLeftRight = Number(parts[1]);
+
+                    if (!isNaN(marginTopBottom)) {
+                        margin.top = marginTopBottom;
+                        margin.bottom = marginTopBottom;
+                    }
+
+                    if (!isNaN(marginLeftRight)) {
+                        margin.right = marginLeftRight;
+                        margin.left = marginLeftRight;
+                    }
+                    break;
+                case 3:
+                    var marginTop = Number(parts[0]);
+                    var marginLeftRight = Number(parts[1]);
+                    var marginBottom = Number(parts[2]);
+
+                    if (!isNaN(marginTop)) {
+                        margin.top = marginTop;
+                    }
+
+                    if (!isNaN(marginLeftRight)) {
+                        margin.right = marginLeftRight;
+                        margin.left = marginLeftRight;
+                    }
+
+                    if (!isNaN(marginBottom)) {
+                        margin.bottom = marginBottom;
+                    }
+
+                    break;
+                default:
+
+                    if (parts.length >= 4) {
+
+                        var marginTop = Number(parts[0]);
+                        var marginRight = Number(parts[1]);
+                        var marginBottom = Number(parts[2]);
+                        var marginLeft = Number(parts[3]);
+
+                        if (!isNaN(marginTop)) {
+                            margin.top = marginTop;
+                        }
+
+                        if (!isNaN(marginRight)) {
+                            margin.right = marginRight;
+                        }
+
+                        if (!isNaN(marginBottom)) {
+                            margin.bottom = marginBottom;
+                        }
+
+                        if (!isNaN(marginLeft)) {
+                            margin.left = marginLeft;
+                        }
+                    }
+
+                    break;
+            }
+        }
+
+        return margin;
+    }
+
+    return {
+        controller: function ($scope, $element, $attrs, $transclude) {
+            console.log('bnlDockedLayout controller:' + $scope.$id);
+
+            // I use $scope.$parent to avoid injecting an empty scope for trancluded content.
+            $transclude($scope.$parent, function (clone, scope) {
+                $element.append(clone);
+            });
+
+            $scope.$on('bnl-chart-render', function (event, args) {
+
+                console.log('bnlDockedLayout render:' + $scope.$id);
+
+                var g = $element[0];
+                var svg = g.ownerSVGElement;
+
+                var layouts = [];
+
+                var x = 0, y = 0, width = $scope.width ? $scope.width : svg.clientWidth, height = $scope.height ? $scope.height : svg.clientHeight;                
+
+                $.each($($element).children(), function (index, child) {
+
+                    var $child = $(child);
+                    var dock = $child.attr('dock');
+
+                    var childX = x, childY = y, childWidth = width, childHeight = height;
+
+                    if (dock) {
+                        if (dock === 'top') {
+                            childHeight = $child.attr('height') ? Number($child.attr('height')) : height;
+                            y += childHeight;
+                            height -= childHeight;
+                        }
+                        else if (dock === 'right') {
+
+                            childWidth = $child.attr('width') ? Number($child.attr('width')) : width;
+                            childX = width - childWidth;
+
+                            width -= childWidth;
+                        }
+                        else if (dock === 'bottom') {
+
+                            childHeight = $child.attr('height') ? Number($child.attr('height')) : height;
+                            childY = height - childHeight;
+
+                            height -= childHeight;
+                        }
+                        else if (dock === 'left') {
+                            childWidth = $child.attr('width') ? Number($child.attr('width')) : width;
+
+                            x += childWidth;
+                            width -= childWidth;
+                        }
+                    }
+
+                    // I support margin attribute (TRBL same as CSS margin
+                    var margin = parseMargin($child.attr('margin'));                    
+                    childY += margin.top;
+                    childX += margin.left;
+
+                    childHeight -= (margin.top + margin.bottom);
+                    childWidth -= (margin.left + margin.right);
+
+                    // I position each child
+                    if (childX !== 0 || childY !== 0) {
+                        d3.select(child).attr({
+                            transform: 'translate(' + childX + ',' + childY + ')'
+                        });
+                    }
+
+                    var childScope = angular.element(child).isolateScope();
+
+                    childScope.width = childWidth;
+                    childScope.height = childHeight;
+                });
+            });
+        },
+        link: function (scope, element, attrs) {
+            console.log('bnlDockedLayout link:' + scope.$id);
 
             var g = element[0];
-            d3.select(g).classed('bnl-absolute-layout', true);
+            d3.select(g).classed('bnl-docked-layout', true);
         },
         replace: true,
         restrict: 'E',
