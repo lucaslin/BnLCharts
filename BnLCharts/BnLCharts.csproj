@@ -18,14 +18,24 @@
     <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="app.css" />
-    <Content Include="app.js" />
+    <Content Include="css\app\app.css" />
+    <Content Include="js\app\app.js" />
+    <Content Include="js\app\bnl-absolute-layout.js" />
+    <Content Include="js\app\bnl-area.js" />
+    <Content Include="js\app\bnl-chart.js" />
+    <Content Include="js\app\bnl-docked-layout.js" />
+    <Content Include="js\app\bnl-x-axis.js" />
+    <Content Include="js\app\bnl-y-axis.js" />
+    <Content Include="gruntfile.js" />
     <Content Include="index.html" />
-    <Content Include="moment.js" />
-    <Content Include="bnl-charts.js" />
+    <Content Include="js\app\dist\bnl-charts.dist.js" />
+    <Content Include="js\app\dist\bnl-charts.dist.min.js" />
+    <Content Include="js\vendor\moment.js" />
+    <Content Include="js\app\bnl-charts.js" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="package.json" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -33,6 +43,7 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
   </PropertyGroup>
