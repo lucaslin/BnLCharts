@@ -10,20 +10,24 @@
 
     <div ng-controller="MainCtrl">
         <bnl-chart chart-data="chartData" width="1200" height="300">
+            <bnl-time-scale name="xScale" chart="chart" is-utc="true"></bnl-time-scale>
+            <bnl-linear-scale name="yScale" chart="chart"></bnl-linear-scale>
             <bnl-absolute-layout>
-                <bnl-x-axis chart="chart" x="25" y="275" width="1175" height="25"></bnl-x-axis>
-                <bnl-y-axis chart="chart" x="0" y="0" width="25" height="275"></bnl-y-axis>
-                <bnl-area chart="chart" x="25" y="0" width="1175" height="275"></bnl-area>
+                <bnl-x-axis chart="chart" scale="xScale" ticks="day" tick-format="%b %d" x="25" y="275" width="1175" height="25"></bnl-x-axis>
+                <bnl-y-axis chart="chart" scale="yScale" x="0" y="0" width="25" height="275"></bnl-y-axis>
+                <bnl-area chart="chart" scale-x="xScale" scale-y="yScale" x="25" y="0" width="1175" height="275"></bnl-area>
             </bnl-absolute-layout>
         </bnl-chart>
         <br/>
         <br />
         <br />
         <bnl-chart chart-data="chartData" width="1200" height="300">
+            <bnl-time-scale name="xScale" chart="chart" is-utc="true"></bnl-time-scale>
+            <bnl-linear-scale name="yScale" chart="chart"></bnl-linear-scale>
             <bnl-docked-layout>
-                <bnl-y-axis chart="chart" dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>
-                <bnl-x-axis chart="chart" dock="bottom" height="25"></bnl-x-axis>                
-                <bnl-area chart="chart"></bnl-area>
+                <bnl-x-axis chart="chart" scale="xScale" ticks="day" tick-format="%b %d" dock="bottom" height="25" margin="0,0,0,25"></bnl-x-axis>
+                <bnl-y-axis chart="chart" scale="yScale" dock="left" width="25"></bnl-y-axis>                
+                <bnl-area chart="chart" scale-x="xScale" scale-y="yScale"></bnl-area>
             </bnl-docked-layout>
         </bnl-chart>
     </div>
