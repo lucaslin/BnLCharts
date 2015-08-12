@@ -9,12 +9,12 @@
  * HTML:
  * 
  *   <bnl-chart chart-data="chartData" width="1200" height="300">
- *     <bnl-time-scale name="xScale" chart="chart" is-utc="true"></bnl-time-scale>
- *     <bnl-linear-scale name="yScale" chart="chart"></bnl-linear-scale>
+ *     <bnl-time-scale name="xScale" is-utc="true"></bnl-time-scale>
+ *     <bnl-linear-scale name="yScale"></bnl-linear-scale>
  *     <bnl-docked-layout>                
- *       <bnl-y-axis chart="chart" scale="yScale" dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>
- *       <bnl-x-axis chart="chart" scale="xScale" ticks="day" tick-format="%b %d" dock="bottom" height="25"></bnl-x-axis>                               
- *       <bnl-area chart="chart" scale-x="xScale" scale-y="yScale" ></bnl-area>
+ *       <bnl-y-axis scale="yScale" dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>
+ *       <bnl-x-axis scale="xScale" ticks="day" tick-format="%b %d" dock="bottom" height="25"></bnl-x-axis>                               
+ *       <bnl-area scale-x="xScale" scale-y="yScale" ></bnl-area>
  *     </bnl-docked-layout>
  *   </bnl-chart>
  * 
@@ -24,8 +24,7 @@
  *   The scales define the domain/range mapping. 
  *   They do not render anything, but are reference by name to be used by rendering components.
  * 
- *   Choose a layout container for the parts of your chart.  Based on your choice, you can apply different attributes to control layout.
- *   Each part will have a chart attribute that you should bind to chart (e.g. chart="chart").
+ *   Choose a layout container for the parts of your chart.  Based on your choice, you can apply different attributes to control layout. 
  *   Ordering parts can be important to layout and z-order of rendering.
  *   
  * Components
@@ -79,9 +78,18 @@ bnlCharts.directive('bnlChart', function ($timeout) {
 
             var svg = $element[0];
 
-            $scope.chart = {
-                data: $scope.chartData,
-                scales: []
+            var scales = [];            
+
+            this.getData = function () {
+                return $scope.chartData;
+            };
+
+            this.getScale = function (name) {
+                return scales[name];
+            };
+
+            this.setScale = function (name, scale) {
+                scales[name] = scale;
             };
 
             // I transclude content manually to avoid creating another scope.
@@ -140,28 +148,26 @@ bnlCharts.directive('bnlTimeScale', function () {
         return scale;
     }
 
-    return {
-        controller: function ($scope) {
+    return {      
+        link: function (scope, element, attrs, bnlChartCtrl) {
+            console.log('bnlTimeScale link:' + scope.$id);
 
-            console.log('bnlTimeScale controller:' + $scope.$id);
+            scope.$on('bnl-chart-prepare-data', function (event, args) {
 
-            $scope.$on('bnl-chart-prepare-data', function (event, args) {
+                console.log('bnlTimeScale prepare:' + scope.$id);
 
-                console.log('bnlTimeScale prepare:' + $scope.$id);
-
-                var name = $scope.name;
+                var name = scope.name;
                 if (name) {
-                    $scope.chart.scales[name] = createScale($scope.chart.data, $scope.isUtc);
+                    var data = bnlChartCtrl.getData();
+                    var scale = createScale(data, scope.isUtc);
+                    bnlChartCtrl.setScale(name, scale);
                 }
             });
-        },
-        link: function (scope, element, attrs) {
-            console.log('bnlTimeScale link:' + scope.$id);
 
         },
         restrict: 'E',
-        scope: {
-            chart: '=',
+        require: '^bnlChart',
+        scope: {            
             name: '@',
             isUtc: '=?'
         },
@@ -192,27 +198,25 @@ bnlCharts.directive('bnlLinearScale', function () {
         return scale;
     }
 
-    return {
-        controller: function ($scope) {
+    return {      
+        link: function (scope, element, attrs, bnlChartCtrl) {
+            console.log('bnlLinearScale link:' + scope.$id);
 
-            console.log('bnlLinearScale controller:' + $scope.$id);
+            scope.$on('bnl-chart-prepare-data', function (event, args) {
 
-            $scope.$on('bnl-chart-prepare-data', function (event, args) {
+                console.log('bnlLinearScale prepare:' + scope.$id);
 
-                console.log('bnlLinearScale prepare:' + $scope.$id);
-
-                var name = $scope.name;
+                var name = scope.name;
 
                 if (name) {
-                    $scope.chart.scales[name] = createScale($scope.chart.data);
+                    var data = bnlChartCtrl.getData();
+                    var scale = createScale(data);
+                    bnlChartCtrl.setScale(name, scale);
                 }
             });
         },
-        link: function (scope, element, attrs) {
-            console.log('bnlLinearScale link:' + scope.$id);
-
-        },
         restrict: 'E',
+        require: '^bnlChart',        
         scope: {
             chart: '=',
             name: '@',            
@@ -289,11 +293,8 @@ bnlCharts.directive('bnlXAxis', function () {
             .call(xAxis);
     };
 
-    return {
-        controller: function ($scope) {
-            console.log('bnlXAxis controller:' + $scope.$id);
-        },
-        link: function (scope, element, attrs) {
+    return {       
+        link: function (scope, element, attrs, bnlChartCtrl) {
             console.log('bnlXAxis link:' + scope.$id);
 
             scope.$on('bnl-chart-render', function (event, args) {
@@ -304,7 +305,7 @@ bnlCharts.directive('bnlXAxis', function () {
                 var svg = g.ownerSVGElement;
 
 
-                var xScale = scope.chart.scales[scope.scale].copy();
+                var xScale = bnlChartCtrl.getScale(scope.scale).copy();// scope.chart.scales[scope.scale].copy();
                 xScale.range([0, scope.width]);
 
                 render(g, xScale, scope.ticks, scope.tickFormat);
@@ -313,8 +314,8 @@ bnlCharts.directive('bnlXAxis', function () {
         },
         replace: true,
         restrict: 'E',
-        scope: {
-            chart: '=',
+        require: '^bnlChart',
+        scope: {            
             scale: '@',
             ticks: '@',
             tickFormat: '@'
@@ -344,11 +345,8 @@ bnlCharts.directive('bnlYAxis', function () {
             .call(yAxis);
     };
 
-    return {
-        controller: function ($scope) {
-            console.log('bnlYAxis controller:' + $scope.$id);
-        },
-        link: function (scope, element, attrs) {
+    return {   
+        link: function (scope, element, attrs, bnlChartCtrl) {
             console.log('bnlYAxis link:' + scope.$id);
 
             scope.$on('bnl-chart-render', function (event, args) {
@@ -358,7 +356,7 @@ bnlCharts.directive('bnlYAxis', function () {
                 var g = element[0];
                 var svg = g.ownerSVGElement;
 
-                var yScale = scope.chart.scales[scope.scale].copy();
+                var yScale = bnlChartCtrl.getScale(scope.scale).copy(); // scope.chart.scales[scope.scale].copy();
                 yScale.range([scope.height, 0]);
 
                 renderAxis(g, yScale, scope.width, scope.height);
@@ -366,6 +364,7 @@ bnlCharts.directive('bnlYAxis', function () {
         },
         replace: true,
         restrict: 'E',
+        require: '^bnlChart',
         scope: {
             chart: '=',
             scale: '@'
@@ -402,7 +401,7 @@ bnlCharts.directive('bnlArea', function () {
     };
 
     return {
-        link: function (scope, element, attrs) {
+        link: function (scope, element, attrs, bnlChartCtrl) {
             console.log('bnlArea link:' + scope.$id);
 
             scope.$on('bnl-chart-render', function (event, args) {
@@ -412,18 +411,20 @@ bnlCharts.directive('bnlArea', function () {
                 var g = element[0];
                 var svg = g.ownerSVGElement;
 
-                var xScale = scope.chart.scales[scope.scaleX].copy();
+                var xScale = bnlChartCtrl.getScale(scope.scaleX).copy(); //scope.chart.scales[scope.scaleX].copy();
                 xScale.range([0, scope.width]);
 
-                var yScale = scope.chart.scales[scope.scaleY].copy();
+                var yScale = bnlChartCtrl.getScale(scope.scaleY).copy(); // scope.chart.scales[scope.scaleY].copy();
                 yScale.range([scope.height, 0]);
 
+                var data = bnlChartCtrl.getData();
 
-                render(g, xScale, yScale, scope.width, scope.height, scope.chart.data);
+                render(g, xScale, yScale, scope.width, scope.height, data);
             });
         },
         replace: true,
         restrict: 'E',
+        require: '^bnlChart',
         scope: {
             chart: '=',
             scaleX: '@',
@@ -473,10 +474,7 @@ bnlCharts.directive('bnlAbsoluteLayout', function () {
                     childScope.height = height;
                 });
             });
-        },
-        link: function (scope, element, attrs) {
-            console.log('bnlAbsoluteLayout link:' + scope.$id);
-        },
+        },       
         replace: true,
         restrict: 'E',
         scope: {},
@@ -656,13 +654,7 @@ bnlCharts.directive('bnlDockedLayout', function () {
                     childScope.height = childHeight;
                 });
             });
-        },
-        link: function (scope, element, attrs) {
-            console.log('bnlDockedLayout link:' + scope.$id);
-
-            var g = element[0];
-            d3.select(g).classed('bnl-docked-layout', true);
-        },
+        },       
         replace: true,
         restrict: 'E',
         scope: {},
