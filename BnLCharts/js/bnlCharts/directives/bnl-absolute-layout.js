@@ -1,6 +1,6 @@
 ﻿bnlCharts.directive('bnlAbsoluteLayout', [function () {
     return {
-        controller: ['$scope', '$element', '$attrs', '$transclude', function ($scope, $element, $attrs, $transclude) {
+        controller: function ($scope, $element, $attrs, $transclude) {
             console.log('bnlAbsoluteLayout controller:' + $scope.$id);
 
             // I use $scope.$parent to avoid injecting an empty scope for trancluded content.
@@ -34,9 +34,6 @@
                     childScope.height = height;
                 });
             });
-        }],
-        link: function (scope, element, attrs) {
-            console.log('bnlAbsoluteLayout link:' + scope.$id);
         },
         replace: true,
         restrict: 'E',
@@ -44,5 +41,5 @@
         templateNamespace: 'svg',
         template: '<g class="bnl-absolute-layout"></g>',
         transclude: true
-    }
+    };
 }]);

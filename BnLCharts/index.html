@@ -10,20 +10,24 @@
 
     <div ng-controller="MainCtrl">
         <bnl-chart chart-data="chartData" width="1200" height="300">
+            <bnl-time-scale name="x" is-utc="true"></bnl-time-scale>
+            <bnl-linear-scale name="y"></bnl-linear-scale>
             <bnl-absolute-layout>
-                <bnl-x-axis chart="chart" x="25" y="275" width="1175" height="25"></bnl-x-axis>
-                <bnl-y-axis chart="chart" x="0" y="0" width="25" height="275"></bnl-y-axis>
-                <bnl-area chart="chart" x="25" y="0" width="1175" height="275"></bnl-area>
+                <bnl-x-axis scale="x" ticks="day" tick-format="%b %d" x="25" y="275" width="1175" height="25"></bnl-x-axis>
+                <bnl-y-axis scale="y" x="0" y="0" width="25" height="275"></bnl-y-axis>
+                <bnl-area scale-x="x" scale-y="y" x="25" y="0" width="1175" height="275"></bnl-area>
             </bnl-absolute-layout>
         </bnl-chart>
-        <br/>
+        <br />
         <br />
         <br />
         <bnl-chart chart-data="chartData" width="1200" height="300">
+            <bnl-time-scale name="x" is-utc="true"></bnl-time-scale>
+            <bnl-linear-scale name="y"></bnl-linear-scale>
             <bnl-docked-layout>
-                <bnl-y-axis chart="chart" dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>
-                <bnl-x-axis chart="chart" dock="bottom" height="25"></bnl-x-axis>                
-                <bnl-area chart="chart"></bnl-area>
+                <bnl-area scale-x="x" scale-y="y"></bnl-area>
+                <bnl-x-axis scale="x" ticks="day" tick-format="%b %d" dock="bottom" height="25" margin="0,0,0,25"></bnl-x-axis>
+                <bnl-y-axis scale="y" dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>
             </bnl-docked-layout>
         </bnl-chart>
     </div>
@@ -32,7 +36,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/vendor/moment.js"></script>
-    <script type="text/javascript" src="js/app/dist/bnl-charts.dist.js"></script>
+    <script type="text/javascript" src="js/bnlCharts/bnl-charts.js"></script>
+    <script type="text/javascript" src="js/bnlCharts/directives/bnl-area.js"></script>
+    <script type="text/javascript" src="js/bnlCharts/directives/bnl-absolute-layout.js"></script>
+    <script type="text/javascript" src="js/bnlCharts/directives/bnl-chart.js"></script>
+    <script type="text/javascript" src="js/bnlCharts/directives/bnl-docked-layout.js"></script>
+    <script type="text/javascript" src="js/bnlCharts/directives/bnl-linear-scale.js"></script>
+    <script type="text/javascript" src="js/bnlCharts/directives/bnl-time-scale.js"></script>
+    <script type="text/javascript" src="js/bnlCharts/directives/bnl-x-axis.js"></script>
+    <script type="text/javascript" src="js/bnlCharts/directives/bnl-y-axis.js"></script>
     <script type="text/javascript" src="js/app/app.js"></script>
 </body>
 </html>

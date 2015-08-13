@@ -2,8 +2,6 @@
 
     var renderAxis = function (element, yScale, width, height) {
 
-        yScale.range([height, 0]);
-
         yAxis = d3.svg.axis()
             .scale(yScale)
             .orient('left');
@@ -18,10 +16,7 @@
     };
 
     return {
-        controller: ['$scope', function ($scope) {
-            console.log('bnlYAxis controller:' + $scope.$id);
-        }],
-        link: function (scope, element, attrs) {
+        link: function (scope, element, attrs, bnlChartCtrl) {
             console.log('bnlYAxis link:' + scope.$id);
 
             scope.$on('bnl-chart-render', function (event, args) {
@@ -31,15 +26,20 @@
                 var g = element[0];
                 var svg = g.ownerSVGElement;
 
-                renderAxis(g, scope.chart.yScale, scope.width, scope.height);
+                var yScale = bnlChartCtrl.getScale(scope.scale).copy(); // scope.chart.scales[scope.scale].copy();
+                yScale.range([scope.height, 0]);
+
+                renderAxis(g, yScale, scope.width, scope.height);
             });
         },
         replace: true,
         restrict: 'E',
+        require: '^bnlChart',
         scope: {
-            chart: '='
+            chart: '=',
+            scale: '@'
         },
         templateNamespace: 'svg',
-        template: '<g><g class="y-axis axis"></g></g>'
+        template: '<g><g class="axis y-axis"></g></g>'
     };
 }]);

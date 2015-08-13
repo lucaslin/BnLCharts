@@ -20,18 +20,18 @@
   <ItemGroup>
     <Content Include="css\app\app.css" />
     <Content Include="js\app\app.js" />
-    <Content Include="js\app\bnl-absolute-layout.js" />
-    <Content Include="js\app\bnl-area.js" />
-    <Content Include="js\app\bnl-chart.js" />
-    <Content Include="js\app\bnl-docked-layout.js" />
-    <Content Include="js\app\bnl-x-axis.js" />
-    <Content Include="js\app\bnl-y-axis.js" />
+    <Content Include="js\bnlCharts\directives\bnl-absolute-layout.js" />
+    <Content Include="js\bnlCharts\directives\bnl-area.js" />
+    <Content Include="js\bnlCharts\directives\bnl-chart.js" />
+    <Content Include="js\bnlCharts\directives\bnl-docked-layout.js" />
+    <Content Include="js\bnlCharts\directives\bnl-linear-scale.js" />
+    <Content Include="js\bnlCharts\directives\bnl-time-scale.js" />
+    <Content Include="js\bnlCharts\directives\bnl-x-axis.js" />
+    <Content Include="js\bnlCharts\directives\bnl-y-axis.js" />
     <Content Include="gruntfile.js" />
     <Content Include="index.html" />
-    <Content Include="js\app\dist\bnl-charts.dist.js" />
-    <Content Include="js\app\dist\bnl-charts.dist.min.js" />
     <Content Include="js\vendor\moment.js" />
-    <Content Include="js\app\bnl-charts.js" />
+    <Content Include="js\bnlCharts\bnl-charts.js" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -43,7 +43,9 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="dist\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
   </PropertyGroup>

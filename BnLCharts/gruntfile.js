@@ -1,4 +1,14 @@
 ﻿module.exports = function (grunt) {
+    var jsSrc = [
+        'js/bnlCharts/bnl-charts.js',
+        'js/bnlCharts/directives/*.js'
+    ];
+
+    var distSrc = {
+        js: 'dist/js/',
+        css: 'dist/css/'
+    };
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
@@ -11,24 +21,16 @@
                     },
                     separator: grunt.util.linefeed + ';' + grunt.util.linefeed,
                 },
-                src: [
-                    'js/app/bnl-charts.js',
-                    'js/app/*.js',
-                    '!js/app/app.js'
-                ],
-                dest: 'js/app/dist/bnl-charts.dist.js'
+                src: jsSrc,
+                dest: distSrc.js + 'bnl-charts.dist.js'
             },
             prod: {
                 options: {
                     stripBanners: false,
                     separator: ';',
                 },
-                src: [
-                   'js/app/bnl-charts.js',
-                   'js/app/*.js',
-                   '!js/app/app.js'
-                ],
-                dest: 'js/app/dist/bnl-charts.prod.dist.js'
+                src: jsSrc,
+                dest: distSrc.js + 'bnl-charts.prod.dist.js'
             }
         },
 
@@ -37,13 +39,13 @@
                 preserveComments: 'some'
             },
             prod: {
-                src: 'js/app/dist/bnl-charts.prod.dist.js',
-                dest: 'js/app/dist/bnl-charts.dist.min.js'
+                src: distSrc.js + 'bnl-charts.prod.dist.js',
+                dest: distSrc.js + 'bnl-charts.dist.min.js'
             }
         },
 
         clean: {
-            prod: ['js/app/dist/bnl-charts.prod.dist.js']
+            prod: [distSrc.js + 'bnl-charts.prod.dist.js']
         }
     });
 
@@ -53,5 +55,4 @@
 
     grunt.registerTask('default', ['concat:debug']);
     grunt.registerTask('prod', ['concat:prod', 'uglify', 'clean']);
-    //grunt.registerTask('prod', ['concat:prod']);
 };
