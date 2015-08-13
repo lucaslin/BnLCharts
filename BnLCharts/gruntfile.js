@@ -1,7 +1,7 @@
 ﻿module.exports = function (grunt) {
     var jsSrc = [
-        'js/bnlCharts/bnl-charts.js',
-        'js/bnlCharts/directives/*.js'
+        'bnlCharts/bnl-charts.js',
+        'bnlCharts/directives/*.js'
     ];
 
     var distSrc = {

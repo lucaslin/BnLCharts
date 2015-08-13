@@ -18,22 +18,22 @@
     <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="css\app\app.css" />
+    <Content Include="app.css" />
     <Content Include="dist\js\bnl-charts.dist.js" />
     <Content Include="dist\js\bnl-charts.dist.min.js" />
-    <Content Include="js\app\app.js" />
-    <Content Include="js\bnlCharts\directives\bnl-absolute-layout.js" />
-    <Content Include="js\bnlCharts\directives\bnl-area.js" />
-    <Content Include="js\bnlCharts\directives\bnl-chart.js" />
-    <Content Include="js\bnlCharts\directives\bnl-docked-layout.js" />
-    <Content Include="js\bnlCharts\directives\bnl-linear-scale.js" />
-    <Content Include="js\bnlCharts\directives\bnl-time-scale.js" />
-    <Content Include="js\bnlCharts\directives\bnl-x-axis.js" />
-    <Content Include="js\bnlCharts\directives\bnl-y-axis.js" />
+    <Content Include="app\app.js" />
+    <Content Include="bnlCharts\directives\bnl-absolute-layout.js" />
+    <Content Include="bnlCharts\directives\bnl-area.js" />
+    <Content Include="bnlCharts\directives\bnl-chart.js" />
+    <Content Include="bnlCharts\directives\bnl-docked-layout.js" />
+    <Content Include="bnlCharts\directives\bnl-linear-scale.js" />
+    <Content Include="bnlCharts\directives\bnl-time-scale.js" />
+    <Content Include="bnlCharts\directives\bnl-x-axis.js" />
+    <Content Include="bnlCharts\directives\bnl-y-axis.js" />
     <Content Include="gruntfile.js" />
     <Content Include="index.html" />
-    <Content Include="js\vendor\moment.js" />
-    <Content Include="js\bnlCharts\bnl-charts.js" />
+    <Content Include="vendor\moment.js" />
+    <Content Include="bnlCharts\bnl-charts.js" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
