@@ -1,5 +1,5 @@
-﻿bnlCharts.directive('bnlChart', ['$timeout', function ($timeout) {
-
+﻿angular.module('bnlCharts')
+.directive('bnlChart', function ($timeout) {
     return {
         controller: function ($scope, $element, $attrs, $transclude) {
             console.log('bnlChart controller:' + $scope.$id);
@@ -47,5 +47,5 @@
         templateNamespace: 'svg',
         template: '<svg></svg>',
         transclude: true
-    };
-}]);
+    }
+});

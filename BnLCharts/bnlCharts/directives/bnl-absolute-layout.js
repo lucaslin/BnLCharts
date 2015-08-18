@@ -1,4 +1,5 @@
-﻿bnlCharts.directive('bnlAbsoluteLayout', [function () {
+﻿angular.module('bnlCharts')
+.directive('bnlAbsoluteLayout', function () {
     return {
         controller: function ($scope, $element, $attrs, $transclude) {
             console.log('bnlAbsoluteLayout controller:' + $scope.$id);
@@ -41,5 +42,5 @@
         templateNamespace: 'svg',
         template: '<g class="bnl-absolute-layout"></g>',
         transclude: true
-    };
-}]);
+    }
+});

@@ -1,4 +1,5 @@
-﻿/*!
+﻿// ================================================================================ //
+/*
  * BnL Charts
  * 
  * D3 charting componentized using Angular directives.
@@ -62,5 +63,5 @@
  *   D3 renders based on variables in memory and not SVG containers (e.g. axis.range), so width/height containment isn't important.
  *   Browsers handle nested SVG width/height updates for rendering, but the clientWidth, clientHeight, and getBBox() are zeros for a nested SVG in JavaScript.
  */
-
-var bnlCharts = angular.module('bnlCharts', []);
+// ================================================================================ //
+angular.module('bnlCharts', []);

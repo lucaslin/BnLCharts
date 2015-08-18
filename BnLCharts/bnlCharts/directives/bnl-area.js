@@ -1,4 +1,5 @@
-﻿bnlCharts.directive('bnlArea', [function () {
+﻿angular.module('bnlCharts')
+.directive('bnlArea', function () {
 
     var render = function (element, xScale, yScale, width, height, data) {
 
@@ -53,5 +54,5 @@
         },
         templateNamespace: 'svg',
         template: '<g class="area" viewBox="0 0 250 1000"></g>'
-    };
-}]);
+    }
+});

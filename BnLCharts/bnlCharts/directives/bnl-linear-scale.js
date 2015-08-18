@@ -1,5 +1,5 @@
 ﻿angular.module('bnlCharts')
-.directive('bnlLinearScale', [function () {
+.directive('bnlLinearScale', function () {
 
     var createScale = function (data) {
         var scale = d3.scale.linear();
@@ -18,7 +18,7 @@
         scale.domain([minY, maxY]);
 
         return scale;
-    };
+    }
 
     return {
         link: function (scope, element, attrs, bnlChartCtrl) {
@@ -43,5 +43,5 @@
             chart: '=',
             name: '@',
         }
-    };
-}]);
+    }
+});

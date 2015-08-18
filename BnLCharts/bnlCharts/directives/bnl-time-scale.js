@@ -18,7 +18,7 @@
         scale.domain([minDate, maxDate]);
 
         return scale;
-    };
+    }
 
     return {
         link: function (scope, element, attrs, bnlChartCtrl) {
@@ -43,5 +43,5 @@
             name: '@',
             isUtc: '=?'
         },
-    };
+    }
 });

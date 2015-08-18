@@ -1,4 +1,5 @@
-﻿/*
+﻿// ================================================================================ //
+/*
  * BnL Charts - bnl-docked-layout
  * 
  * Provides layout of child SVG elements based on docking to the sides of the available
@@ -31,7 +32,10 @@
  * Width and Height are set on the scope of each child element.
  * Child elements are expected to have isolated scope.
  */
-bnlCharts.directive('bnlDockedLayout', [function () {
+// ================================================================================ //
+angular.module('bnlCharts')
+.directive('bnlDockedLayout', function () {
+
     var parseMargin = function (text) {
 
         var margin = {
@@ -133,7 +137,7 @@ bnlCharts.directive('bnlDockedLayout', [function () {
 
         childScope.width = width;
         childScope.height = height;
-    };
+    }
 
     return {
         controller: function ($scope, $element, $attrs, $transclude) {
@@ -229,5 +233,5 @@ bnlCharts.directive('bnlDockedLayout', [function () {
         templateNamespace: 'svg',
         template: '<g class="bnl-docked-layout"></g>',
         transclude: true
-    };
-}]);
+    }
+});

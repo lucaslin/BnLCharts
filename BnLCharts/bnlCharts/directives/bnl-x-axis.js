@@ -1,4 +1,5 @@
-﻿bnlCharts.directive('bnlXAxis', [function () {
+﻿angular.module('bnlCharts')
+.directive('bnlXAxis', function () {
 
     var render = function (element, xScale, ticks, tickFormat) {
 
@@ -93,5 +94,5 @@
         },
         templateNamespace: 'svg',
         template: '<g class="axis x-axis"></g>'
-    };
-}]);
+    }
+});

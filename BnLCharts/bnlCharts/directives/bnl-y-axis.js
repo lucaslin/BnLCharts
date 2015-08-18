@@ -1,4 +1,5 @@
-﻿bnlCharts.directive('bnlYAxis', [function () {
+﻿angular.module('bnlCharts')
+.directive('bnlYAxis', function () {
 
     var renderAxis = function (element, yScale, width, height) {
 
@@ -41,5 +42,5 @@
         },
         templateNamespace: 'svg',
         template: '<g><g class="axis y-axis"></g></g>'
-    };
-}]);
+    }
+});
