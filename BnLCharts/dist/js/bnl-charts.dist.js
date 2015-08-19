@@ -1,9 +1,72 @@
-var bnlCharts = angular.module('bnlCharts', []);
+/*
+ * BnL Charts
+ * 
+ * D3 charting componentized using Angular directives.
+ * 
+ * Usage
+ * -----
+ * HTML:
+ * 
+ *   <bnl-chart config="myConfig" width="1200" height="300">
+ *     <bnl-docked-layout>                
+ *       <bnl-area data="config.data" domain-x="config.x" domain-y="config.y" scale-x="config.xScale" scale-y="config.yScale"></bnl-area>
+ *       <bnl-x-axis scale="config.xScale" ticks="day" tick-format="%b %d" dock="bottom" height="25" margin="0,0,0,25"></bnl-x-axis>
+ *       <bnl-y-axis scale="config.yScale" dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>
+ *     </bnl-docked-layout>
+ *   </bnl-chart>
+ * 
+ *   The bnl-chart accesses data through the config binding.
+ *   The bnl-chart renders as an SVG element, so you can set properties on the SVG like width and height.
+ * 
+ *   Choose a layout container for the parts of your chart.  Based on your choice, you can apply different attributes to control layout. 
+ *   Ordering parts can be important to layout and z-order of rendering.
+ * 
+ *   Different directives require different attributes in order to render.  
+ *   For example, bnl-area requires a data property, scale functions, and domain functions.
+ *   
+ * Components
+ * ----------
+ * Modules: 
+ *   bnlCharts
+ * 
+ * Directives:
+ *   bnl-chart: Main container for a chart.
+ * 
+ *   bnl-x-axis: Renders an x axis
+ *   bnl-y-axis: Renders a Y axis.
+ * 
+ *   bnl-area: Renders an area chart for a single series)
+ * 
+ *   bnl-absolute-layout: Positions children based on their attributes of x, y, width, height.
+ *   bnl-docked-layout: Positions children based on the side they are docked (left, top, right, bottom, none).
+ * 
+ * 
+ * Design Considerations
+ * ---------------------
+ * Scope: 
+ *   The chart directive is isolated scope to prevent collision with other charts on the page.
+ *   Each child that renders has isolated scope to allow for setting individual scope properties like width and height.
+ *    
+ * Transclusion:
+ *   Containers (chart and layouts) transclude content to avoid requiring chart authors to edit templates.
+ *   Transclusion is done manually in the directives to avoid creating an additonal isolated scope. ng-transclude is not in the templates.
+ *   Layouts with isolated scopes use the chart's scope for their transcluded content to be invisible to their children.
+ *   The call to $transclude is done at the tail of the method because it causes link functions to execute.  
+ *   $transclude is called so that controller calls tunnel down the scope hierarchy and link calls bubble up the scope hierarchy.
+ * 
+ * SVG:
+ *   This library avoids nesting SVG elements for grouping and uses the <g> element instead.
+ *   A single SVG at the root allows the chart to scale properly; It is vector graphics after all.
+ *   D3 renders based on variables in memory and not SVG containers (e.g. axis.range), so width/height containment isn't important.
+ *   Browsers handle nested SVG width/height updates for rendering, but the clientWidth, clientHeight, and getBBox() are zeros for a nested SVG in JavaScript.
+ */
+// ================================================================================ //
+angular.module('bnlCharts', []);
 ;
-bnlCharts.directive('bnlAbsoluteLayout', [function () {
+angular.module('bnlCharts')
+.directive('bnlAbsoluteLayout', function () {
     return {
         controller: function ($scope, $element, $attrs, $transclude) {
-            console.log('bnlAbsoluteLayout controller:' + $scope.$id);
 
             // I use $scope.$parent to avoid injecting an empty scope for trancluded content.
             $transclude($scope.$parent, function (clone, scope) {
@@ -11,8 +74,6 @@ bnlCharts.directive('bnlAbsoluteLayout', [function () {
             });
 
             $scope.$on('bnl-chart-render', function (event, args) {
-
-                console.log('bnlAbsoluteLayout render:' + $scope.$id);
 
                 var svg = $element[0];
 
@@ -43,17 +104,18 @@ bnlCharts.directive('bnlAbsoluteLayout', [function () {
         templateNamespace: 'svg',
         template: '<g class="bnl-absolute-layout"></g>',
         transclude: true
-    };
-}]);
+    }
+});
 ;
-bnlCharts.directive('bnlArea', [function () {
+angular.module('bnlCharts')
+.directive('bnlArea', function () {
 
-    var render = function (element, xScale, yScale, width, height, data) {
+    var render = function (data, x, y, element, xScale, yScale, width, height) {
 
         var area = d3.svg.area()
-            .x(function (d) { return xScale(new Date(d.x)); })
+            .x(function (d,i) { return xScale(x(d,i)); })
             .y0(height)
-            .y1(function (d) { return height - yScale(d.y); })
+            .y1(function (d, i) { return height - yScale(y(d,i)); })
              .interpolate("linear");
 
         var select = d3.select(element).selectAll('.area').data(data);
@@ -71,59 +133,49 @@ bnlCharts.directive('bnlArea', [function () {
 
     return {
         link: function (scope, element, attrs, bnlChartCtrl) {
-            console.log('bnlArea link:' + scope.$id);
+
+            scope.config = bnlChartCtrl.getConfig();
 
             scope.$on('bnl-chart-render', function (event, args) {
-
-                console.log('bnlArea render:' + scope.$id);
 
                 var g = element[0];
                 var svg = g.ownerSVGElement;
 
-                var xScale = bnlChartCtrl.getScale(scope.scaleX).copy(); //scope.chart.scales[scope.scaleX].copy();
+                var xScale = scope.scaleX.copy(); 
                 xScale.range([0, scope.width]);
 
-                var yScale = bnlChartCtrl.getScale(scope.scaleY).copy(); // scope.chart.scales[scope.scaleY].copy();
+                var yScale = scope.scaleY.copy();
                 yScale.range([scope.height, 0]);
 
-                var data = bnlChartCtrl.getData();
+                var data = scope.data;
+                var x = scope.domainX;
+                var y = scope.domainY;
 
-                render(g, xScale, yScale, scope.width, scope.height, data);
+                render(data, x, y, g, xScale, yScale, scope.width, scope.height);
             });
         },
         replace: true,
         restrict: 'E',
         require: '^bnlChart',
         scope: {
-            chart: '=',
-            scaleX: '@',
-            scaleY: '@'
+            data: '=',
+            scaleX: '=',
+            scaleY: '=',
+            domainX: '=',
+            domainY: '='
         },
         templateNamespace: 'svg',
         template: '<g class="area" viewBox="0 0 250 1000"></g>'
-    };
-}]);
+    }
+});
 ;
-bnlCharts.directive('bnlChart', ['$timeout', function ($timeout) {
-
+angular.module('bnlCharts')
+.directive('bnlChart', function ($timeout) {
     return {
         controller: function ($scope, $element, $attrs, $transclude) {
-            console.log('bnlChart controller:' + $scope.$id);
 
-            var svg = $element[0];
-
-            var scales = [];
-
-            this.getData = function () {
-                return $scope.chartData;
-            };
-
-            this.getScale = function (name) {
-                return scales[name];
-            };
-
-            this.setScale = function (name, scale) {
-                scales[name] = scale;
+            this.getConfig = function () {
+                return $scope.config;
             };
 
             // I transclude content manually to avoid creating another scope.
@@ -134,7 +186,6 @@ bnlCharts.directive('bnlChart', ['$timeout', function ($timeout) {
             });
         },
         link: function (scope, element, attrs) {
-            console.log('bnlChart link:' + scope.$id);
 
             $timeout(function () {
                 scope.$broadcast('bnl-chart-prepare-data');
@@ -148,15 +199,51 @@ bnlCharts.directive('bnlChart', ['$timeout', function ($timeout) {
         replace: true,
         restrict: 'E',
         scope: {
-            chartData: '='
+            config: '='
         },
         templateNamespace: 'svg',
         template: '<svg></svg>',
         transclude: true
-    };
-}]);
+    }
+});
 ;
-bnlCharts.directive('bnlDockedLayout', [function () {
+/*
+ * BnL Charts - bnl-docked-layout
+ * 
+ * Provides layout of child SVG elements based on docking to the sides of the available
+ * area with undocked element taking up the remaining space.
+ * 
+ * Usage
+ * -----
+ * HTML:
+ * 
+ *   <bnl-chart ...>
+ *     ...
+ *     <bnl-docked-layout>                
+ *       <bnl-y-axis ... dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>
+ *       <bnl-x-axis ... dock="bottom" height="25"></bnl-x-axis>                               
+ *       <bnl-area ... ></bnl-area>
+ *     </bnl-docked-layout>
+ *   </bnl-chart>
+ * 
+ *   The optional dock element can be top, left, right, or bottom.
+ *   If multiple items at the same dock position overlap.
+ *   You can nest bnl-docked-layout elements to stack element docked to the same side.
+ *   
+ *   The optional margin element allows spacing around elements.  
+ *   Margin behaves like the CSS margin attribute (i.e. TRBL)
+ *    
+ * 
+ * Design Considerations
+ * ---------------------
+ * Elements are positioned using tranform: translate
+ * Width and Height are set on the scope of each child element.
+ * Child elements are expected to have isolated scope.
+ */
+// ================================================================================ //
+angular.module('bnlCharts')
+.directive('bnlDockedLayout', function () {
+
     var parseMargin = function (text) {
 
         var margin = {
@@ -258,11 +345,10 @@ bnlCharts.directive('bnlDockedLayout', [function () {
 
         childScope.width = width;
         childScope.height = height;
-    };
+    }
 
     return {
         controller: function ($scope, $element, $attrs, $transclude) {
-            console.log('bnlDockedLayout controller:' + $scope.$id);
 
             // I use $scope.$parent to avoid injecting an empty scope for trancluded content.
             $transclude($scope.$parent, function (clone, scope) {
@@ -270,8 +356,6 @@ bnlCharts.directive('bnlDockedLayout', [function () {
             });
 
             $scope.$on('bnl-chart-render', function (event, args) {
-
-                console.log('bnlDockedLayout render:' + $scope.$id);
 
                 var g = $element[0];
                 var svg = g.ownerSVGElement;
@@ -319,7 +403,7 @@ bnlCharts.directive('bnlDockedLayout', [function () {
                                 childHeight -= childMargin.top + childMargin.bottom;
                                 break;
                             default:
-                                console.log('The dock attribute "' + dock + '" is not supported by bnl-docked-layout. The element will be treated as undocked.');
+                                console.warn('The dock attribute "' + dock + '" is not supported by bnl-docked-layout. The element will be treated as undocked.');
                                 dock = undefined;
                                 break;
                         }
@@ -354,106 +438,11 @@ bnlCharts.directive('bnlDockedLayout', [function () {
         templateNamespace: 'svg',
         template: '<g class="bnl-docked-layout"></g>',
         transclude: true
-    };
-}]);
-;
-angular.module('bnlCharts')
-.directive('bnlLinearScale', [function () {
-
-    var createScale = function (data) {
-        var scale = d3.scale.linear();
-
-        var minY = 0;
-        var maxY = 0;
-
-        if (data) {
-            minY = d3.min(data, function (d) { return d.y; });
-            maxY = d3.max(data, function (d) { return d.y; });
-        }
-
-        minY = Math.min(0, minY);
-        maxY = Math.max(1, maxY);
-
-        scale.domain([minY, maxY]);
-
-        return scale;
-    };
-
-    return {
-        link: function (scope, element, attrs, bnlChartCtrl) {
-            console.log('bnlLinearScale link:' + scope.$id);
-
-            scope.$on('bnl-chart-prepare-data', function (event, args) {
-
-                console.log('bnlLinearScale prepare:' + scope.$id);
-
-                var name = scope.name;
-
-                if (name) {
-                    var data = bnlChartCtrl.getData();
-                    var scale = createScale(data);
-                    bnlChartCtrl.setScale(name, scale);
-                }
-            });
-        },
-        restrict: 'E',
-        require: '^bnlChart',
-        scope: {
-            chart: '=',
-            name: '@',
-        }
-    };
-}]);
-;
-angular.module('bnlCharts')
-.directive('bnlTimeScale', function () {
-
-    var createScale = function (data, isUtc) {
-
-        var scale;
-
-        if (isUtc) {
-            scale = d3.time.scale.utc();
-        }
-        else {
-            scale = d3.time.scale();
-        }
-
-        var minDate = data && data.length > 0 ? new Date((data[0].x)) : new Date();
-        var maxDate = data && data.length > 0 ? new Date((data[data.length - 1].x)) : minDate;
-
-        scale.domain([minDate, maxDate]);
-
-        return scale;
-    };
-
-    return {
-        link: function (scope, element, attrs, bnlChartCtrl) {
-            console.log('bnlTimeScale link:' + scope.$id);
-
-            scope.$on('bnl-chart-prepare-data', function (event, args) {
-
-                console.log('bnlTimeScale prepare:' + scope.$id);
-
-                var name = scope.name;
-                if (name) {
-                    var data = bnlChartCtrl.getData();
-                    var scale = createScale(data, scope.isUtc);
-                    bnlChartCtrl.setScale(name, scale);
-                }
-            });
-
-        },
-        restrict: 'E',
-        require: '^bnlChart',
-        scope: {
-            name: '@',
-            isUtc: '=?'
-        },
-    };
+    }
 });
 ;
-bnlCharts.directive('bnlXAxis', [function () {
+angular.module('bnlCharts')
+.directive('bnlXAxis', function () {
 
     var render = function (element, xScale, ticks, tickFormat) {
 
@@ -521,17 +510,16 @@ bnlCharts.directive('bnlXAxis', [function () {
 
     return {
         link: function (scope, element, attrs, bnlChartCtrl) {
-            console.log('bnlXAxis link:' + scope.$id);
+
+            scope.config = bnlChartCtrl.getConfig();
 
             scope.$on('bnl-chart-render', function (event, args) {
-
-                console.log('bnlXAxis render:' + scope.$id);
 
                 var g = element[0];
                 var svg = g.ownerSVGElement;
 
 
-                var xScale = bnlChartCtrl.getScale(scope.scale).copy();// scope.chart.scales[scope.scale].copy();
+                var xScale = scope.scale.copy();
                 xScale.range([0, scope.width]);
 
                 render(g, xScale, scope.ticks, scope.tickFormat);
@@ -542,16 +530,17 @@ bnlCharts.directive('bnlXAxis', [function () {
         restrict: 'E',
         require: '^bnlChart',
         scope: {
-            scale: '@',
+            scale: '=',
             ticks: '@',
             tickFormat: '@'
         },
         templateNamespace: 'svg',
         template: '<g class="axis x-axis"></g>'
-    };
-}]);
+    }
+});
 ;
-bnlCharts.directive('bnlYAxis', [function () {
+angular.module('bnlCharts')
+.directive('bnlYAxis', function () {
 
     var renderAxis = function (element, yScale, width, height) {
 
@@ -570,16 +559,15 @@ bnlCharts.directive('bnlYAxis', [function () {
 
     return {
         link: function (scope, element, attrs, bnlChartCtrl) {
-            console.log('bnlYAxis link:' + scope.$id);
+
+            scope.config = bnlChartCtrl.getConfig();
 
             scope.$on('bnl-chart-render', function (event, args) {
-
-                console.log('bnlYAxis render:' + scope.$id);
 
                 var g = element[0];
                 var svg = g.ownerSVGElement;
 
-                var yScale = bnlChartCtrl.getScale(scope.scale).copy(); // scope.chart.scales[scope.scale].copy();
+                var yScale = scope.scale.copy(); // scope.chart.scales[scope.scale].copy();
                 yScale.range([scope.height, 0]);
 
                 renderAxis(g, yScale, scope.width, scope.height);
@@ -588,11 +576,10 @@ bnlCharts.directive('bnlYAxis', [function () {
         replace: true,
         restrict: 'E',
         require: '^bnlChart',
-        scope: {
-            chart: '=',
-            scale: '@'
+        scope: {            
+            scale: '='
         },
         templateNamespace: 'svg',
         template: '<g><g class="axis y-axis"></g></g>'
-    };
-}]);
+    }
+});
