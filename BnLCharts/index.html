@@ -9,25 +9,21 @@
 <body ng-app="mainApp">
 
     <div ng-controller="MainCtrl">
-        <bnl-chart chart-data="chartData" width="1200" height="300">
-            <bnl-time-scale name="x" is-utc="true"></bnl-time-scale>
-            <bnl-linear-scale name="y"></bnl-linear-scale>
+        <bnl-chart config="chartConfig" width="1200" height="300">
             <bnl-absolute-layout>
-                <bnl-x-axis scale="x" ticks="day" tick-format="%b %d" x="25" y="275" width="1175" height="25"></bnl-x-axis>
-                <bnl-y-axis scale="y" x="0" y="0" width="25" height="275"></bnl-y-axis>
-                <bnl-area scale-x="x" scale-y="y" x="25" y="0" width="1175" height="275"></bnl-area>
+                <bnl-area data="config.data" domain-x="config.x" domain-y="config.y" scale-x="config.xScale" scale-y="config.yScale" x="25" y="0" width="1175" height="275"></bnl-area>
+                <bnl-x-axis scale="config.xScale" ticks="day" tick-format="%b %d" x="25" y="275" width="1175" height="25"></bnl-x-axis>
+                <bnl-y-axis scale="config.yScale" x=" 0" y="0" width="25" height="275"></bnl-y-axis>
             </bnl-absolute-layout>
         </bnl-chart>
         <br />
         <br />
         <br />
-        <bnl-chart chart-data="chartData" width="1200" height="300">
-            <bnl-time-scale name="x" is-utc="true"></bnl-time-scale>
-            <bnl-linear-scale name="y"></bnl-linear-scale>
+        <bnl-chart config="chartConfig" width="1200" height="300">            
             <bnl-docked-layout>
-                <bnl-area scale-x="x" scale-y="y"></bnl-area>
-                <bnl-x-axis scale="x" ticks="day" tick-format="%b %d" dock="bottom" height="25" margin="0,0,0,25"></bnl-x-axis>
-                <bnl-y-axis scale="y" dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>                                
+                <bnl-area data="config.data" domain-x="config.x" domain-y="config.y" scale-x="config.xScale" scale-y="config.yScale"></bnl-area>
+                <bnl-x-axis scale="config.xScale" ticks="day" tick-format="%b %d" dock="bottom" height="25" margin="0,0,0,25"></bnl-x-axis>
+                <bnl-y-axis scale="config.yScale" dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>
             </bnl-docked-layout>
         </bnl-chart>
     </div>
@@ -41,8 +37,6 @@
     <script type="text/javascript" src="bnlCharts/directives/bnl-absolute-layout.js"></script>
     <script type="text/javascript" src="bnlCharts/directives/bnl-chart.js"></script>
     <script type="text/javascript" src="bnlCharts/directives/bnl-docked-layout.js"></script>
-    <script type="text/javascript" src="bnlCharts/directives/bnl-linear-scale.js"></script>
-    <script type="text/javascript" src="bnlCharts/directives/bnl-time-scale.js"></script>
     <script type="text/javascript" src="bnlCharts/directives/bnl-x-axis.js"></script>
     <script type="text/javascript" src="bnlCharts/directives/bnl-y-axis.js"></script>
     <script type="text/javascript" src="app/app.js"></script>

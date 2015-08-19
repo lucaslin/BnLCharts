@@ -1,12 +1,12 @@
 ﻿angular.module('bnlCharts')
 .directive('bnlArea', function () {
 
-    var render = function (element, xScale, yScale, width, height, data) {
+    var render = function (data, x, y, element, xScale, yScale, width, height) {
 
         var area = d3.svg.area()
-            .x(function (d) { return xScale(new Date(d.x)); })
+            .x(function (d,i) { return xScale(x(d,i)); })
             .y0(height)
-            .y1(function (d) { return height - yScale(d.y); })
+            .y1(function (d, i) { return height - yScale(y(d,i)); })
              .interpolate("linear");
 
         var select = d3.select(element).selectAll('.area').data(data);
@@ -24,33 +24,36 @@
 
     return {
         link: function (scope, element, attrs, bnlChartCtrl) {
-            console.log('bnlArea link:' + scope.$id);
+
+            scope.config = bnlChartCtrl.getConfig();
 
             scope.$on('bnl-chart-render', function (event, args) {
-
-                console.log('bnlArea render:' + scope.$id);
 
                 var g = element[0];
                 var svg = g.ownerSVGElement;
 
-                var xScale = bnlChartCtrl.getScale(scope.scaleX).copy(); //scope.chart.scales[scope.scaleX].copy();
+                var xScale = scope.scaleX.copy(); 
                 xScale.range([0, scope.width]);
 
-                var yScale = bnlChartCtrl.getScale(scope.scaleY).copy(); // scope.chart.scales[scope.scaleY].copy();
+                var yScale = scope.scaleY.copy();
                 yScale.range([scope.height, 0]);
 
-                var data = bnlChartCtrl.getData();
+                var data = scope.data;
+                var x = scope.domainX;
+                var y = scope.domainY;
 
-                render(g, xScale, yScale, scope.width, scope.height, data);
+                render(data, x, y, g, xScale, yScale, scope.width, scope.height);
             });
         },
         replace: true,
         restrict: 'E',
         require: '^bnlChart',
         scope: {
-            chart: '=',
-            scaleX: '@',
-            scaleY: '@'
+            data: '=',
+            scaleX: '=',
+            scaleY: '=',
+            domainX: '=',
+            domainY: '='
         },
         templateNamespace: 'svg',
         template: '<g class="area" viewBox="0 0 250 1000"></g>'

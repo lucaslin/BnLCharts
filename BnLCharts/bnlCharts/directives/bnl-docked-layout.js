@@ -141,7 +141,6 @@ angular.module('bnlCharts')
 
     return {
         controller: function ($scope, $element, $attrs, $transclude) {
-            console.log('bnlDockedLayout controller:' + $scope.$id);
 
             // I use $scope.$parent to avoid injecting an empty scope for trancluded content.
             $transclude($scope.$parent, function (clone, scope) {
@@ -149,8 +148,6 @@ angular.module('bnlCharts')
             });
 
             $scope.$on('bnl-chart-render', function (event, args) {
-
-                console.log('bnlDockedLayout render:' + $scope.$id);
 
                 var g = $element[0];
                 var svg = g.ownerSVGElement;
@@ -198,7 +195,7 @@ angular.module('bnlCharts')
                                 childHeight -= childMargin.top + childMargin.bottom;
                                 break;
                             default:
-                                console.log('The dock attribute "' + dock + '" is not supported by bnl-docked-layout. The element will be treated as undocked.');
+                                console.warn('The dock attribute "' + dock + '" is not supported by bnl-docked-layout. The element will be treated as undocked.');
                                 dock = undefined;
                                 break;
                         }

@@ -67,17 +67,16 @@
 
     return {
         link: function (scope, element, attrs, bnlChartCtrl) {
-            console.log('bnlXAxis link:' + scope.$id);
+
+            scope.config = bnlChartCtrl.getConfig();
 
             scope.$on('bnl-chart-render', function (event, args) {
-
-                console.log('bnlXAxis render:' + scope.$id);
 
                 var g = element[0];
                 var svg = g.ownerSVGElement;
 
 
-                var xScale = bnlChartCtrl.getScale(scope.scale).copy();// scope.chart.scales[scope.scale].copy();
+                var xScale = scope.scale.copy();
                 xScale.range([0, scope.width]);
 
                 render(g, xScale, scope.ticks, scope.tickFormat);
@@ -88,7 +87,7 @@
         restrict: 'E',
         require: '^bnlChart',
         scope: {
-            scale: '@',
+            scale: '=',
             ticks: '@',
             tickFormat: '@'
         },
