@@ -8,24 +8,22 @@
  * -----
  * HTML:
  * 
- *   <bnl-chart chart-data="chartData" width="1200" height="300">
- *     <bnl-time-scale name="xScale" is-utc="true"></bnl-time-scale>
- *     <bnl-linear-scale name="yScale"></bnl-linear-scale>
+ *   <bnl-chart config="myConfig" width="1200" height="300">
  *     <bnl-docked-layout>                
- *       <bnl-y-axis scale="yScale" dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>
- *       <bnl-x-axis scale="xScale" ticks="day" tick-format="%b %d" dock="bottom" height="25"></bnl-x-axis>                               
- *       <bnl-area scale-x="xScale" scale-y="yScale" ></bnl-area>
+ *       <bnl-area data="config.data" domain-x="config.x" domain-y="config.y" scale-x="config.xScale" scale-y="config.yScale"></bnl-area>
+ *       <bnl-x-axis scale="config.xScale" ticks="day" tick-format="%b %d" dock="bottom" height="25" margin="0,0,0,25"></bnl-x-axis>
+ *       <bnl-y-axis scale="config.yScale" dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>
  *     </bnl-docked-layout>
  *   </bnl-chart>
  * 
- *   The bnl-chart data is bound via the chart-data attribute.
+ *   The bnl-chart accesses data through the config binding.
  *   The bnl-chart renders as an SVG element, so you can set properties on the SVG like width and height.
- * 
- *   The scales define the domain/range mapping. 
- *   They do not render anything, but are reference by name to be used by rendering components.
  * 
  *   Choose a layout container for the parts of your chart.  Based on your choice, you can apply different attributes to control layout. 
  *   Ordering parts can be important to layout and z-order of rendering.
+ * 
+ *   Different directives require different attributes in order to render.  
+ *   For example, bnl-area requires a data property, scale functions, and domain functions.
  *   
  * Components
  * ----------

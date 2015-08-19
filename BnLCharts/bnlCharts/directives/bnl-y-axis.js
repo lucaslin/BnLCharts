@@ -18,16 +18,15 @@
 
     return {
         link: function (scope, element, attrs, bnlChartCtrl) {
-            console.log('bnlYAxis link:' + scope.$id);
+
+            scope.config = bnlChartCtrl.getConfig();
 
             scope.$on('bnl-chart-render', function (event, args) {
-
-                console.log('bnlYAxis render:' + scope.$id);
 
                 var g = element[0];
                 var svg = g.ownerSVGElement;
 
-                var yScale = bnlChartCtrl.getScale(scope.scale).copy(); // scope.chart.scales[scope.scale].copy();
+                var yScale = scope.scale.copy(); // scope.chart.scales[scope.scale].copy();
                 yScale.range([scope.height, 0]);
 
                 renderAxis(g, yScale, scope.width, scope.height);
@@ -36,9 +35,8 @@
         replace: true,
         restrict: 'E',
         require: '^bnlChart',
-        scope: {
-            chart: '=',
-            scale: '@'
+        scope: {            
+            scale: '='
         },
         templateNamespace: 'svg',
         template: '<g><g class="axis y-axis"></g></g>'

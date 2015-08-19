@@ -2,7 +2,6 @@
 .directive('bnlAbsoluteLayout', function () {
     return {
         controller: function ($scope, $element, $attrs, $transclude) {
-            console.log('bnlAbsoluteLayout controller:' + $scope.$id);
 
             // I use $scope.$parent to avoid injecting an empty scope for trancluded content.
             $transclude($scope.$parent, function (clone, scope) {
@@ -10,8 +9,6 @@
             });
 
             $scope.$on('bnl-chart-render', function (event, args) {
-
-                console.log('bnlAbsoluteLayout render:' + $scope.$id);
 
                 var svg = $element[0];
 
