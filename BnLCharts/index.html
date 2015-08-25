@@ -11,7 +11,7 @@
     <div ng-controller="MainCtrl">
         <bnl-chart config="chartConfig" width="1200" height="300">
             <bnl-absolute-layout>
-                <bnl-area data="config.data" domain-x="config.x" domain-y="config.y" scale-x="config.xScale" scale-y="config.yScale" x="25" y="0" width="1175" height="275"></bnl-area>
+                <bnl-area data="config.data" get-x="config.x" get-y="config.y" scale-x="config.xScale" scale-y="config.yScale" x="25" y="0" width="1175" height="275"></bnl-area>
                 <bnl-x-axis scale="config.xScale" ticks="day" tick-format="%b %d" x="25" y="275" width="1175" height="25"></bnl-x-axis>
                 <bnl-y-axis scale="config.yScale" x=" 0" y="0" width="25" height="275"></bnl-y-axis>
             </bnl-absolute-layout>
@@ -22,12 +22,12 @@
         <bnl-chart config="chartConfig" width="1200" height="300">
             <bnl-docked-layout id="first">
                 <bnl-docked-layout id="second">
-                    <bnl-area data="config.data" domain-x="config.x" domain-y="config.y" scale-x="config.xScale" scale-y="config.yScale"></bnl-area>
+                    <bnl-area data="config.data" get-x="config.x" get-y="config.y" scale-x="config.xScale" scale-y="config.yScale"></bnl-area>
                     <bnl-x-axis scale="config.xScale" ticks="day" tick-format="%b %d" dock="bottom" height="25" margin="0,0,0,25"></bnl-x-axis>
                     <bnl-y-axis scale="config.yScale" dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>
                 </bnl-docked-layout>
                 <bnl-legend data="config.legendData" orientation="vertical" indicator-radius="7" get-label-text="config.legendLabel" get-indicator-class="config.legendClass" get-indicator-fill="config.legendColor" item-margin="0,0,5,0" label-margin="5,0,0,5" dock="right" width="75" margin="10,0,0,10"></bnl-legend>
-                <bnl-legend data="config.legendData" orientation="horizontal" indicator-radius="7" get-label-text="config.legendLabel" get-indicator-class="config.legendClass" get-indicator-fill="config.legendColor" item-margin="0,10,0,0" label-margin="5,0,0,5" dock="bottom" height="75" margin="10,0,0,10"></bnl-legend>
+                <bnl-legend data="config.legendData" orientation="horizontal" indicator-radius="7" get-label-text="config.legendLabel" get-indicator-class="config.legendClass" get-indicator-fill="config.legendColor" item-margin="0,10,0,0" label-margin="5,0,0,5" dock="bottom" height="15" margin="10,0,0,10"></bnl-legend>
             </bnl-docked-layout>
         </bnl-chart>
     </div>

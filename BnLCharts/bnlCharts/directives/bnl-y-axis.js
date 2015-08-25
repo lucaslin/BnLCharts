@@ -23,10 +23,9 @@
 
             scope.$on('bnl-chart-render', function (event, args) {
 
-                var g = element[0];
-                var svg = g.ownerSVGElement;
+                var g = element[0];                
 
-                var yScale = scope.scale.copy(); // scope.chart.scales[scope.scale].copy();
+                var yScale = scope.scale.copy();
                 yScale.range([scope.height, 0]);
 
                 renderAxis(g, yScale, scope.width, scope.height);

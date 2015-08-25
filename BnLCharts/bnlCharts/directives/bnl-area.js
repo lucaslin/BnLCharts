@@ -1,12 +1,36 @@
 ﻿angular.module('bnlCharts')
 .directive('bnlArea', function () {
 
-    var render = function (data, x, y, element, xScale, yScale, width, height) {
+    function defaultGetX(d, i)
+    {
+        if (d.x)
+            return d.x;
+        else
+            return d;
+    }
+
+    function defaultGetY(d, i) {
+        if (d.y)
+            return d.y;
+        else
+            return d;
+    }
+
+    function defaultScale(value) {
+        return value;
+    }
+
+    var render = function (data, getX, getY, element, scaleX, scaleY, width, height) {
+
+        getX = getX ? getX : defaultGetX;
+        getY = getY ? getY : defaultGetY;
+        scaleX = scaleX ? scaleX : defaultScale;
+        scaleY = scaleY ? scaleY : defaultScale;
 
         var area = d3.svg.area()
-            .x(function (d,i) { return xScale(x(d,i)); })
+            .x(function (d,i) { return scaleX(getX(d,i)); })
             .y0(height)
-            .y1(function (d, i) { return height - yScale(y(d,i)); })
+            .y1(function (d, i) { return height - scaleY(getY(d,i)); })
              .interpolate("linear");
 
         var select = d3.select(element).selectAll('.area').data(data);
@@ -32,17 +56,15 @@
                 var g = element[0];
                 var svg = g.ownerSVGElement;
 
-                var xScale = scope.scaleX.copy(); 
-                xScale.range([0, scope.width]);
+                var scaleX = scope.scaleX.copy(); 
+                scaleX.range([0, scope.width]);
 
-                var yScale = scope.scaleY.copy();
-                yScale.range([scope.height, 0]);
+                var scaleY = scope.scaleY.copy();
+                scaleY.range([scope.height, 0]);
 
-                var data = scope.data;
-                var x = scope.domainX;
-                var y = scope.domainY;
+                var data = scope.data;                
 
-                render(data, x, y, g, xScale, yScale, scope.width, scope.height);
+                render(data, scope.getX, scope.getY, g, scaleX, scaleY, scope.width, scope.height);
             });
         },
         replace: true,
@@ -52,8 +74,8 @@
             data: '=',
             scaleX: '=',
             scaleY: '=',
-            domainX: '=',
-            domainY: '='
+            getX: '=',
+            getY: '='
         },
         templateNamespace: 'svg',
         template: '<g class="area" viewBox="0 0 250 1000"></g>'

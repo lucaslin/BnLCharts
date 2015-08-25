@@ -72,9 +72,7 @@
 
             scope.$on('bnl-chart-render', function (event, args) {
 
-                var g = element[0];
-                var svg = g.ownerSVGElement;
-
+                var g = element[0];                
 
                 var xScale = scope.scale.copy();
                 xScale.range([0, scope.width]);
