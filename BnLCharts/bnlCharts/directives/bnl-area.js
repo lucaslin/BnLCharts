@@ -78,6 +78,6 @@
             getY: '='
         },
         templateNamespace: 'svg',
-        template: '<g class="area" viewBox="0 0 250 1000"></g>'
+        template: '<g class="area"></g>'
     }
 });
