@@ -34,96 +34,7 @@
  */
 // ================================================================================ //
 angular.module('bnlCharts')
-.directive('bnlDockedLayout', function () {
-
-    var parseMargin = function (text) {
-
-        var margin = {
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0
-        };
-
-        if (text) {
-
-            var parts = text.split(',');
-
-            switch (parts.length) {
-                case 1:
-                    var marginAll = Number(parts[0]);
-                    if (!isNaN(marginAll)) {
-                        margin.top = marginAll;
-                        margin.right = marginAll;
-                        margin.bottom = marginAll;
-                        margin.left = marginAll;
-                    }
-                    break;
-                case 2:
-                    var marginTopBottom = Number(parts[0]);
-                    var marginLeftRight = Number(parts[1]);
-
-                    if (!isNaN(marginTopBottom)) {
-                        margin.top = marginTopBottom;
-                        margin.bottom = marginTopBottom;
-                    }
-
-                    if (!isNaN(marginLeftRight)) {
-                        margin.right = marginLeftRight;
-                        margin.left = marginLeftRight;
-                    }
-                    break;
-                case 3:
-                    var marginTop = Number(parts[0]);
-                    var marginLeftRight = Number(parts[1]);
-                    var marginBottom = Number(parts[2]);
-
-                    if (!isNaN(marginTop)) {
-                        margin.top = marginTop;
-                    }
-
-                    if (!isNaN(marginLeftRight)) {
-                        margin.right = marginLeftRight;
-                        margin.left = marginLeftRight;
-                    }
-
-                    if (!isNaN(marginBottom)) {
-                        margin.bottom = marginBottom;
-                    }
-
-                    break;
-                default:
-
-                    if (parts.length >= 4) {
-
-                        var marginTop = Number(parts[0]);
-                        var marginRight = Number(parts[1]);
-                        var marginBottom = Number(parts[2]);
-                        var marginLeft = Number(parts[3]);
-
-                        if (!isNaN(marginTop)) {
-                            margin.top = marginTop;
-                        }
-
-                        if (!isNaN(marginRight)) {
-                            margin.right = marginRight;
-                        }
-
-                        if (!isNaN(marginBottom)) {
-                            margin.bottom = marginBottom;
-                        }
-
-                        if (!isNaN(marginLeft)) {
-                            margin.left = marginLeft;
-                        }
-                    }
-
-                    break;
-            }
-        }
-
-        return margin;
-    }
+.directive('bnlDockedLayout', ['bnlParseAttributeService', function (bnlParseAttributeService) {    
 
     var positionChild = function (child, x, y, width, height) {
 
@@ -157,13 +68,13 @@ angular.module('bnlCharts')
                 var x = 0, y = 0, width = $scope.width ? $scope.width : svg.clientWidth, height = $scope.height ? $scope.height : svg.clientHeight;
 
                 var undocked = [];
-                var undockedMargin = { top: 0, right: width, bottom: height, left: 0 };
+                var undockedMargin = { top: 0, right: width, bottom: height, left: 0 };                
 
                 $.each($($element).children(), function (index, child) {
 
                     var $child = $(child);
 
-                    var childMargin = parseMargin($child.attr('margin'));
+                    var childMargin = bnlParseAttributeService.parseMargin($child.attr('margin'));
 
                     var childX = x + childMargin.left;
                     var childY = y + childMargin.top;
@@ -182,12 +93,12 @@ angular.module('bnlCharts')
                                 break;
                             case 'right':
                                 undockedMargin.right = Math.min(width - childDockWidth, undockedMargin.right);
-                                childX = width - childDockWidth;
+                                childX = (width - childDockWidth) + childMargin.left;
                                 childHeight -= childMargin.top + childMargin.bottom;
                                 break;
                             case 'bottom':
                                 undockedMargin.bottom = Math.min(height - childDockHeight, undockedMargin.bottom);
-                                childY = height - childDockHeight;
+                                childY = (height - childDockHeight) + childMargin.top;
                                 childWidth -= childMargin.left + childMargin.right;
                                 break;
                             case 'left':
@@ -231,4 +142,4 @@ angular.module('bnlCharts')
         template: '<g class="bnl-docked-layout"></g>',
         transclude: true
     }
-});
+}]);

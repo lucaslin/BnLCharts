@@ -10,3 +10,11 @@ svg {
 .area {
     fill: darkgray;
 }
+
+.legend-indicator-2 {
+    fill:green;
+}
+
+.bnl-legend-item-label {
+    font-size: 10pt;
+}

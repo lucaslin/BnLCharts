@@ -19,6 +19,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="app.css" />
+    <Content Include="bnlCharts\directives\bnl-legend.js" />
+    <Content Include="bnlCharts\services\bnl-measure-text-service.js" />
+    <Content Include="bnlCharts\services\bnl-parse-attribute-service.js" />
     <Content Include="dist\js\bnl-charts.dist.js" />
     <Content Include="dist\js\bnl-charts.dist.min.js" />
     <Content Include="app\app.js" />
