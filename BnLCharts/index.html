@@ -19,14 +19,14 @@
         </p>
         <h2>Example</h2>
         <p>This example demonstrates an area chart with x and y axes and a legend.</p>
-        <bnl-chart config="chartConfig" width="1200" height="300">
+        <bnl-chart config="numberByDateTimeMultipleSeriesConfig" width="1200" height="300">
             <bnl-docked-layout id="first">
                 <bnl-docked-layout id="second">
-                    <bnl-area data="config.data" get-x="config.x" get-y="config.y" scale-x="config.xScale" scale-y="config.yScale"></bnl-area>
+                    <bnl-area data="config.data" get-x="config.x" get-y="config.y" scale-x="config.xScale" scale-y="config.yScale" get-series-fill="config.getSeriesFill"></bnl-area>
                     <bnl-x-axis scale="config.xScale" ticks="day" tick-format="%b %d" dock="bottom" height="25" margin="0,0,0,25"></bnl-x-axis>
                     <bnl-y-axis scale="config.yScale" dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>
-                </bnl-docked-layout>                
-                <bnl-legend data="config.legendData" orientation="horizontal" indicator-radius="7" get-label-text="config.legendLabel" get-indicator-class="config.legendClass" get-indicator-fill="config.legendColor" item-margin="0,10,0,0" label-margin="5,0,0,5" dock="bottom" height="15" margin="10,0,0,10"></bnl-legend>
+                </bnl-docked-layout>
+                <bnl-legend data="config.data" orientation="horizontal" indicator-radius="7" get-label-text="config.legendLabel" get-indicator-fill="config.getSeriesFill" item-margin="0,10,0,0" label-margin="5,0,0,5" dock="bottom" height="15" margin="10,0,0,10"></bnl-legend>
             </bnl-docked-layout>
         </bnl-chart>
         <h1>Layouts</h1>
@@ -77,7 +77,7 @@
         </h1>
         <h2>X Axis</h2>
         <p>The x axis draws the specified scale and support ticks and tick-format attributes.</p>
-        <bnl-chart config="chartConfig" width="1200" height="300">
+        <bnl-chart config="numberByDateTimeSingleSeriesConfig" width="1200" height="300">
             <bnl-docked-layout>
                 <chart-part-placeholder class="fake-y-axis" fill-color="lightBlue" stroke-color="black" dock="left" width="25" margin="0,0,25,0"></chart-part-placeholder>
                 <bnl-x-axis scale="config.xScale" ticks="day" tick-format="%b %d" dock="bottom" height="25" margin="0,0,0,25"></bnl-x-axis>
@@ -87,7 +87,7 @@
 
         <h2>Y Axis</h2>
         <p>The y axis draws the specified scale and support ticks and tick-format attributes.</p>
-        <bnl-chart config="chartConfig" width="1200" height="300">
+        <bnl-chart config="numberByDateTimeSingleSeriesConfig" width="1200" height="300">
             <bnl-docked-layout>
                 <bnl-y-axis scale="config.yScale" dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>
                 <chart-part-placeholder class="fake-x-axis" fill-color="lightGreen" stroke-color="black" dock="bottom" height="25" margin="0,0,0,25"></chart-part-placeholder>
@@ -98,9 +98,9 @@
             Area
         </h1>
         <p>The area plots cartesian data along a filled path.</p>
-        <bnl-chart config="chartConfig" width="1200" height="300">
+        <bnl-chart config="numberByDateTimeSingleSeriesConfig" width="1200" height="300">
             <bnl-docked-layout>
-                <bnl-area data="config.data" get-x="config.x" get-y="config.y" scale-x="config.xScale" scale-y="config.yScale" margin="3"></bnl-area>
+                <bnl-area data="config.data" get-x="config.x" get-y="config.y" scale-x="config.xScale" scale-y="config.yScale" get-series-fill="config.getSeriesFill"></bnl-area>
             </bnl-docked-layout>
         </bnl-chart>
         <h1>
@@ -108,38 +108,27 @@
         </h1>
         <p>The legend provides a color and name reference for multiple series.</p>
         <h2>Horizontal</h2>
-        <bnl-chart config="chartConfig" width="1200" height="300">
+        <bnl-chart config="numberByDateTimeMultipleSeriesConfig" width="1200" height="300">
             <bnl-docked-layout>
                 <bnl-docked-layout>
                     <chart-part-placeholder class="fake-y-axis" fill-color="lightBlue" stroke-color="black" dock="left" width="25" margin="0,0,25,0"></chart-part-placeholder>
                     <chart-part-placeholder class="fake-x-axis" fill-color="lightGreen" stroke-color="black" dock="bottom" height="25" margin="0,0,0,25"></chart-part-placeholder>
                     <chart-part-placeholder class="fake-plot" fill-color="lightYellow" stroke-color="black" margin="0,0,3,3"></chart-part-placeholder>
                 </bnl-docked-layout>
-                <bnl-legend data="config.legendData" orientation="horizontal" indicator-radius="7" get-label-text="config.legendLabel" get-indicator-class="config.legendClass" get-indicator-fill="config.legendColor" item-margin="0,10,0,0" label-margin="5,0,0,5" dock="bottom" height="15" margin="10,0,0,10"></bnl-legend>
+                <bnl-legend data="config.data" orientation="horizontal" indicator-radius="7" get-label-text="config.legendLabel" get-indicator-fill="config.getSeriesFill" item-margin="0,10,0,0" label-margin="5,0,0,5" dock="bottom" height="15" margin="15,0,0,10"></bnl-legend>
             </bnl-docked-layout>
         </bnl-chart>
         <h2>Vertical</h2>
-        <bnl-chart config="chartConfig" width="1200" height="300">
+        <bnl-chart config="numberByDateTimeMultipleSeriesConfig" width="1200" height="300">
             <bnl-docked-layout>
                 <bnl-docked-layout>
                     <chart-part-placeholder class="fake-y-axis" fill-color="lightBlue" stroke-color="black" dock="left" width="25" margin="0,0,25,0"></chart-part-placeholder>
                     <chart-part-placeholder class="fake-x-axis" fill-color="lightGreen" stroke-color="black" dock="bottom" height="25" margin="0,0,0,25"></chart-part-placeholder>
                     <chart-part-placeholder class="fake-plot" fill-color="lightYellow" stroke-color="black" margin="0,0,3,3"></chart-part-placeholder>
                 </bnl-docked-layout>
-                <bnl-legend data="config.legendData" orientation="vertical" indicator-radius="7" get-label-text="config.legendLabel" get-indicator-class="config.legendClass" get-indicator-fill="config.legendColor" item-margin="0,0,5,0" label-margin="5,0,0,5" dock="right" width="75" margin="10,0,0,10"></bnl-legend>
+                <bnl-legend data="config.data" orientation="vertical" indicator-radius="7" get-label-text="config.legendLabel" get-indicator-fill="config.getSeriesFill" item-margin="0,0,5,0" label-margin="5,0,0,5" dock="right" width="75" margin="10,0,0,10"></bnl-legend>
             </bnl-docked-layout>
         </bnl-chart>
-        <!--<bnl-chart config="chartConfig" width="1200" height="300">
-            <bnl-docked-layout id="first">
-                <bnl-docked-layout id="second">
-                    <bnl-area data="config.data" get-x="config.x" get-y="config.y" scale-x="config.xScale" scale-y="config.yScale"></bnl-area>
-                    <bnl-x-axis scale="config.xScale" ticks="day" tick-format="%b %d" dock="bottom" height="25" margin="0,0,0,25"></bnl-x-axis>
-                    <bnl-y-axis scale="config.yScale" dock="left" width="25" margin="0,0,25,0"></bnl-y-axis>
-                </bnl-docked-layout>
-                <bnl-legend data="config.legendData" orientation="vertical" indicator-radius="7" get-label-text="config.legendLabel" get-indicator-class="config.legendClass" get-indicator-fill="config.legendColor" item-margin="0,0,5,0" label-margin="5,0,0,5" dock="right" width="75" margin="10,0,0,10"></bnl-legend>
-                <bnl-legend data="config.legendData" orientation="horizontal" indicator-radius="7" get-label-text="config.legendLabel" get-indicator-class="config.legendClass" get-indicator-fill="config.legendColor" item-margin="0,10,0,0" label-margin="5,0,0,5" dock="bottom" height="15" margin="10,0,0,10"></bnl-legend>
-            </bnl-docked-layout>
-        </bnl-chart>-->
     </div>
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.4.min.js"></script>

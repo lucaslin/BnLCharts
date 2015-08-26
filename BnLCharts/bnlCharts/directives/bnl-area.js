@@ -20,30 +20,42 @@
         return value;
     }
 
-    var render = function (data, getX, getY, element, scaleX, scaleY, width, height) {
+    function defaultGetSeriesFill(d, i) {
+        return 'gray';
+    }
+
+    function hasMultipleSeries(data) {
+        return data && Array.isArray(data) && data.length > 0 && Array.isArray(data[0]);
+    }    
+
+    var render = function (data, getX, getY, element, scaleX, scaleY, getSeriesFill, width, height) {
 
         getX = getX ? getX : defaultGetX;
         getY = getY ? getY : defaultGetY;
         scaleX = scaleX ? scaleX : defaultScale;
         scaleY = scaleY ? scaleY : defaultScale;
+        getSeriesFill = getSeriesFill ? getSeriesFill : defaultGetSeriesFill;
 
         var area = d3.svg.area()
             .x(function (d,i) { return scaleX(getX(d,i)); })
             .y0(height)
-            .y1(function (d, i) { return height - scaleY(getY(d,i)); })
+            .y1(function (d, i) { return scaleY(getY(d,i)); })
              .interpolate("linear");
 
         var select = d3.select(element).selectAll('.area').data(data);
+
+        var dataHasMultipleSeries = hasMultipleSeries(data);       
 
         select.enter()
             .append("path")
             .classed("area-path", true)
             .attr(
             {
-                d: area(data),
+                d: dataHasMultipleSeries ? function (d) { return area(d); } : area(data),
                 width: width,
-                height: height
-            })
+                height: height,
+                fill: dataHasMultipleSeries ? function (d, i) { return getSeriesFill(d, i); } : getSeriesFill(data, 0)
+            });
     };
 
     return {
@@ -64,7 +76,7 @@
 
                 var data = scope.data;                
 
-                render(data, scope.getX, scope.getY, g, scaleX, scaleY, scope.width, scope.height);
+                render(data, scope.getX, scope.getY, g, scaleX, scaleY, scope.getSeriesFill, scope.width, scope.height);
             });
         },
         replace: true,
@@ -75,7 +87,8 @@
             scaleX: '=',
             scaleY: '=',
             getX: '=',
-            getY: '='
+            getY: '=',
+            getSeriesFill: '='
         },
         templateNamespace: 'svg',
         template: '<g class="area"></g>'

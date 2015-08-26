@@ -3,19 +3,6 @@
     font-family: 'Segoe UI';
 }
 
-svg {
-    border: 1px solid lightgray;      
-}
-
-
-.area {
-    fill: darkgray;
-}
-
-.legend-indicator-2 {
-    fill:green;
-}
-
-.bnl-legend-item-label {
-    font-size: 10pt;
+.svg22 {
+    fill: rgba(197, 128, 33, 0.90)    
 }
