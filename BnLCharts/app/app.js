@@ -44,13 +44,13 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
         switch (i) {
             case 0:
                 //blue
-                return 'rgba(33, 133, 197,1)';
+                return 'rgba(0, 188, 242,.80)';
             case 2:
                 //green
-                return 'rgba(45, 197, 3, 1)';
+                return 'rgba(152, 223, 138, .80)';
             case 1:
                 //orange
-                return 'rgba(197, 128, 33, 1)';
+                return 'rgba(255, 127, 14, .80)';
             default:
                 return 'gray';
         }
