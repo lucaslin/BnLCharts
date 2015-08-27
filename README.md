@@ -28,7 +28,7 @@ There are also layout directives such as \<bnl-absolute-layout\> and \<bnl-docke
 
 That's it!  Most of the complexity is captured within each part directive and how they map their required attributes to D3 calls.
 
-Example Usage
+Example
 ---
 
         <bnl-chart config="chartConfig" width="1200" height="300">
@@ -39,6 +39,6 @@ Example Usage
             </bnl-docked-layout>
         </bnl-chart>
 
-
+Here, the chart is bound to chartConfig - which must be on the scope.  From there down attributes are bound to config.  You would write the chartConfig object to provide the data property, the getX and getY functions, and the scale-x and scale-y functions.  Because you define chartConfig, you could bind get-x to any function like getPurchaseDate. Notice how the x and y axes share scales with the area.
 
 
