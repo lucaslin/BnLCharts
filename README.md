@@ -16,7 +16,7 @@ This Solution
 ===
 There are some prerequisites for developers: A basic understanding of Angular and D3 are required to use BnlCharts, a much deeper understanding of D3 is required to build custom directives.
 
-BnlCharts is pretty new (started 8/15) and still has a lot of maturing to do.  I think it has a novel and better approach given where D3 and Angular are today.  Technology shifts make make this library unnecessary, however I consider it an interesting design pattern for building a declarative system on top of a functional system.
+BnlCharts is pretty new (started 8/15) and still has a lot of maturing to do.  I think it has a novel and better approach given where D3 and Angular are today.  Technology shifts may make make this library unnecessary, however I consider it an interesting design pattern for building a declarative system on top of a functional system.
 
 How it works  
 ---
