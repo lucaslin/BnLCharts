@@ -18,7 +18,7 @@ There are some prerequisites for developers: A basic understanding of Angular an
 
 BnlCharts is pretty new (started 8/15) and still has a lot of maturing to do.  I think it has a novel and better approach given where D3 and Angular are today.  Technology shifts make make this library unnecessary, however I consider it an interesting design pattern for building a declarative system on top of a functional system.
 
-Here's how this thing works.  
+How it works  
 ---
 The \<bnl-chart\> directive puts an \<svg\> element on the page.  It has isolated scope so that charts don't interfere with one another.  It uses transclusion so that you can just put other directives inside it without having to modify it's template.  Once everything is linked, it broadcasts a couple of events: 'bnl-chart-prepare-data' and 'bnl-chart-render'.  It has one scope-bound attribute: config.  This attribute is where you provide an object containing your data and any transformation functions (like scale, color selection, etc.).
 
@@ -41,4 +41,6 @@ Example
 
 Here, the chart is bound to chartConfig - which must be on the scope.  From there down attributes are bound to config.  You would write the chartConfig object to provide the data property, the getX and getY functions, and the scale-x and scale-y functions.  Because you define chartConfig, you could bind get-x to any function like getPurchaseDate. Notice how the x and y axes share scales with the area.
 
-
+Licensing
+===
+MIT license.  It uses D3 and Angular, so you'll need to comply with their OSS licenses as well.  Contributions (pull requests) welcome.
